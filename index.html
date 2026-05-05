@@ -6010,7 +6010,30 @@ function loginNext() {
     };
     localStorage.setItem(LOGIN_KEY, JSON.stringify(user));
 
-    // Seed a profile with the user's name and family size
+    // Hide login screen immediately, show loading state
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+
+    // Try to load existing data from Supabase first
+    const cloudLoaded = await loadFromCloud(user.phone);
+
+    if (cloudLoaded) {
+      // Returning user — restore their data
+      _loadProfileIndex();
+      if (!activeProfileId || !profiles.find(p => p.id === activeProfileId)) {
+        // Create a local profile entry if missing
+        const newId = _genProfId();
+        profiles.push({id: newId, name: user.name, initials: _initialsFromName(user.name), createdAt: Date.now()});
+        activeProfileId = newId;
+        _saveProfileIndex();
+        saveState(); // persist loaded cloud data to localStorage too
+      }
+      init();
+      toast('Welcome back, ' + user.name.split(' ')[0] + '! ☁️ Data restored');
+      return; // skip the seed profile flow below
+    }
+
+    // New user — seed a profile with the user's name and family size
     const seedProfile = {
       name: user.name,
       adults: user.adults,
