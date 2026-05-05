@@ -2,20 +2,20 @@
   "name": "PantryFlow",
   "short_name": "PantryFlow",
   "description": "Your personal Kitchen OS",
-  "start_url": "/Melo/",
-  "scope": "/Melo/",
+  "start_url": "https://komalxspace.github.io/Melo/index.html",
+  "scope": "https://komalxspace.github.io/Melo/",
   "display": "standalone",
   "background_color": "#f5f0e8",
   "theme_color": "#4a7c59",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/Melo/icon.png",
+      "src": "https://komalxspace.github.io/Melo/icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/Melo/icon.png",
+      "src": "https://komalxspace.github.io/Melo/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
