@@ -1,20 +1,21 @@
 {
-  "name": "Melo",
-  "short_name": "Melo",
+  "name": "PantryFlow",
+  "short_name": "PantryFlow",
   "description": "Your personal Kitchen OS",
   "start_url": "/Melo/",
+  "scope": "/Melo/",
   "display": "standalone",
   "background_color": "#f5f0e8",
   "theme_color": "#4a7c59",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "/Melo/icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon.png",
+      "src": "/Melo/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
