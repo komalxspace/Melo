@@ -1527,7 +1527,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
-// ═══════════════════════════════════════════════════════════════
+
+<script>
+  // ═══════════════════════════════════════════════════════════════
 // SUPABASE CLOUD SYNC
 // ═══════════════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://nfkumviybvingfmjubsf.supabase.co';
@@ -1571,7 +1573,6 @@ async function loadFromCloud(phone) {
     return true;
   } catch(e) { console.warn('Cloud load error:',e); return false; }
 }
-<script>
 // ═══════════════════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════════════════
