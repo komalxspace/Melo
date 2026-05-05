@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <link rel="manifest" href="https://komalxspace.github.io/Melo/manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -1526,7 +1527,50 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
-
+// ═══════════════════════════════════════════════════════════════
+// SUPABASE CLOUD SYNC
+// ═══════════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://nfkumviybvingfmjubsf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Er_BqJw29Gq0awMFhZrBqg_gMxiQjED';
+let _sb = null;
+function getSB() {
+  if (!_sb) _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  return _sb;
+}
+function _cloudKey() {
+  try { const u = JSON.parse(localStorage.getItem('melo_user')||'{}'); return u.phone||null; } catch(e) { return null; }
+}
+async function saveToCloud() {
+  const phone = _cloudKey(); if (!phone) return;
+  try {
+    await getSB().from('user_data').upsert({
+      phone,
+      pantry:      JSON.stringify(ingredients),
+      dishes:      JSON.stringify(dishes),
+      plan:        JSON.stringify(monthPlan),
+      settings:    JSON.stringify(planSettings),
+      categories:  JSON.stringify(categories),
+      dish_groups: JSON.stringify(dishGroups),
+      household:   JSON.stringify(household),
+      updated_at:  new Date().toISOString(),
+    }, {onConflict:'phone'});
+  } catch(e) { console.warn('Cloud save error:',e); }
+}
+async function loadFromCloud(phone) {
+  try {
+    const {data,error} = await getSB().from('user_data').select('*').eq('phone',phone).maybeSingle();
+    if (error||!data) return false;
+    const tryParse = (s,fb) => { try{const v=JSON.parse(s);return v||fb;}catch(e){return fb;} };
+    const p=tryParse(data.pantry,null);     if(Array.isArray(p)&&p.length) ingredients=p;
+    const d=tryParse(data.dishes,null);     if(Array.isArray(d)&&d.length) dishes=d;
+    const pl=tryParse(data.plan,null);      if(pl) monthPlan=pl;
+    const s=tryParse(data.settings,null);   if(s)  planSettings={..._defaultPlanSettings(),...s};
+    const c=tryParse(data.categories,null); if(Array.isArray(c)&&c.length) categories=c;
+    const g=tryParse(data.dish_groups,null);if(Array.isArray(g)&&g.length) dishGroups=g;
+    const h=tryParse(data.household,null);  if(h)  household=h;
+    return true;
+  } catch(e) { console.warn('Cloud load error:',e); return false; }
+}
 <script>
 // ═══════════════════════════════════════════════════════════════
 // DATA
@@ -1696,13 +1740,15 @@ function _saveProfileIndex() {
 function _profileKey(id) { return 'melo_state_' + id; }
 
 function saveState() {
-  if (!activeProfileId) return;
+   if (!activeProfileId) return;
   try {
     localStorage.setItem(_profileKey(activeProfileId), JSON.stringify({
       categories, dishGroups, ingredients, dishes,
       household, planSettings, monthPlan, currentWeek, shopWeek
     }));
   } catch(e) { console.warn('saveState error', e); }
+  // Also sync to Supabase cloud (fire and forget)
+  saveToCloud();
 }
 
 function saveStorage() { saveState(); }
