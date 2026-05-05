@@ -6049,10 +6049,32 @@ async function loginNext() {
   }
 }
 
-function bootApp() {
+async function bootApp() {
   if (isLoggedIn()) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
+
+    // Try to restore from Supabase first (returning user on new device)
+    const user = getLoggedInUser();
+    if (user && user.phone) {
+      try {
+        const cloudLoaded = await loadFromCloud(user.phone);
+        if (cloudLoaded) {
+          // Cloud data loaded — make sure a local profile exists to hold it
+          _loadProfileIndex();
+          if (!activeProfileId || !profiles.find(p => p.id === activeProfileId)) {
+            const newId = _genProfId();
+            profiles.push({id: newId, name: user.name || 'My Household', initials: _initialsFromName(user.name || 'MH'), createdAt: Date.now()});
+            activeProfileId = newId;
+            _saveProfileIndex();
+          }
+          saveState(); // persist cloud data to localStorage
+        }
+      } catch(e) {
+        console.warn('Cloud restore failed, using local data:', e);
+      }
+    }
+
     init();
   } else {
     document.getElementById('login-screen').style.display = 'flex';
