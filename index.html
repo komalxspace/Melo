@@ -5975,7 +5975,7 @@ function adjLoginFam(type, delta) {
   document.getElementById('login-' + type).textContent = loginState[type];
 }
 
-function loginNext() {
+async function loginNext() {
   if (loginStep === 'phone') {
     // Show phone on OTP screen
     document.getElementById('login-phone-display').textContent = loginState.cc + ' ' + loginState.phone;
@@ -6044,7 +6044,6 @@ function loginNext() {
 
     // Hide login, show app, run init
     document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
     init();
     toast('Welcome, ' + user.name.split(' ')[0] + '! 🎉');
   }
