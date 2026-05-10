@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="manifest" href="https://komalxspace.github.io/Melo/manifest.json">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<meta name="mobile-web-app-capable" content="yes">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F7F3EE">
+<meta name="color-scheme" content="light">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="PantryFlow">
-<link rel="apple-touch-icon" href="icon.png"> 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-title" content="Melo">
+<meta name="description" content="Melo — your kitchen's meal planner. Organise your pantry, dishes, and weekly meal plans.">
 <title>Melo</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
+  color-scheme: light;
   --bg: #F7F3EE;
   --surface: #FFFFFF;
-  --surface2: #F0EBE3;
+  --surface2: #F1ECE4;
+  --tile: #F8F5F0;
   --border: #E4DDD4;
   --accent: #3D6B4F;
   --accent2: #5A8F6E;
@@ -35,8 +42,10 @@
   --sheet-radius: 24px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text)}
-#app{height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.12)}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);overscroll-behavior:none}
+html{background:var(--bg) !important}
+body{background:var(--bg) !important}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow:hidden;background:var(--bg)}
 
 /* ── HEADER ── */
 .header{background:var(--surface);padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10}
@@ -51,7 +60,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 .screen.active{display:block}
 
 /* ── BOTTOM NAV ── */
-.nav{height:var(--tab-h);background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:stretch;flex-shrink:0;position:relative;z-index:10}
+.nav{height:var(--tab-h);background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:stretch;flex-shrink:0;position:relative;z-index:10;padding-bottom:env(safe-area-inset-bottom);box-sizing:content-box}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;transition:color .2s;padding:8px 4px}
 .nav-btn.active{color:var(--accent)}
 .nav-btn svg{width:22px;height:22px}
@@ -87,9 +96,32 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 /* ── CHIPS (keep for backward compat) ── */
 .chips{padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);white-space:nowrap;transition:all .15s}
-.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.chip.manage{background:none;border-style:dashed;color:var(--text3)}
+/* ── Unified chip system ──────────────────────────────────────────────
+   Default state: outlined, off-white background.
+   .active        — single-select active OR multi-select selected.
+   .chip-multi    — adds a small ✓ leading indicator when active.
+   .chip-multi:not(.active) — shows a circle outline so users see it's a multi-pick.
+   .chip.manage   — dashed neutral, for ⚙ Manage / Edit affordances.
+*/
+.chip{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);white-space:nowrap;transition:all .15s;line-height:1;user-select:none}
+.chip:hover{border-color:var(--text3)}
+.chip:active{transform:scale(.96)}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 8px rgba(61,107,79,.18)}
+.chip.active:hover{border-color:var(--accent)}
+.chip.manage{background:transparent;border-style:dashed;color:var(--text3);font-weight:500}
+.chip.manage:hover{color:var(--accent);border-color:var(--accent)}
+
+/* Multi-select chip — adds visual cue that this control accepts multiple selections */
+
+/* Single-select chip is just default .chip (no extra class needed) */
+
+/* For backward compatibility — existing .tag-btn usages map to .chip behavior */
+.tag-btn{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);white-space:nowrap;transition:all .15s;line-height:1;user-select:none}
+.tag-btn:hover{border-color:var(--text3)}
+.tag-btn:active{transform:scale(.96)}
+.tag-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 8px rgba(61,107,79,.18)}
+.tag-btn.multi::before{content:'';display:inline-block;width:14px;height:14px;border-radius:4px;border:1.5px solid var(--border);background:transparent;flex-shrink:0;transition:all .15s;margin-right:2px}
+.tag-btn.multi.active::before{background:#fff;border-color:#fff;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%233D6B4F' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='2,6 5,9 10,3'/></svg>");background-size:10px 10px;background-position:center;background-repeat:no-repeat}
 
 /* ── INGREDIENT GRID ── */
 .ing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px}
@@ -128,39 +160,40 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 /* ── DISH GRID ── */
 .dish-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px}
 .dish-grid-section-hdr{grid-column:1/-1;padding:10px 2px 4px;font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;justify-content:space-between}
-.dish-tile{background:var(--surface);border-radius:18px;padding:16px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;border:1.5px solid var(--border);transition:all .15s;position:relative;min-width:0;overflow:hidden}
+.dish-tile{background:var(--surface);border-radius:18px;padding:16px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;border:1.5px solid var(--border);transition:all .15s;position:relative;min-width:0;overflow:hidden}
+.dish-tile:active{transform:scale(.98);border-color:var(--accent)}
+.dish-tile-bubble{width:60px;height:60px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;position:relative}
+.dish-tile-name{font-size:12px;font-weight:700;text-align:center;color:var(--text);line-height:1.3;word-break:break-word;width:100%}
+.dish-tile-meta-line{font-size:10px;color:var(--text3);text-align:center;line-height:1.3;width:100%;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .dish-tile:active{transform:scale(.96);border-color:var(--accent)}
-.dish-tile-bubble{width:60px;height:60px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
-.dish-tile-name{font-size:11px;font-weight:700;text-align:center;color:var(--text);line-height:1.3;word-break:break-word;width:100%}
-.dish-tile-meta{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center}
-.dish-tile-badge{font-size:10px;font-weight:500;padding:2px 6px;border-radius:5px;background:var(--surface2);color:var(--text2)}
-.dish-tile-freq{font-size:10px;color:var(--text3)}
-.fab{position:fixed;bottom:calc(var(--tab-h) + 16px);right:20px;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(61,107,79,.4);border:none;z-index:50;transition:transform .15s}
-.fab:active{transform:scale(.93)}
 
 /* ── DISHES LIST ── */
-.dish-section-hdr{padding:14px 16px 6px;display:flex;align-items:center;justify-content:space-between}
-.dish-section-hdr .dsh-title{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
+.dish-section-hdr{padding:18px 4px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--surface2);margin-bottom:10px}
+.dish-section-hdr .dsh-title{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px}
 .dish-section-hdr .dsh-count{font-size:12px;color:var(--text3)}
-.dish-card{background:var(--surface);margin:0 16px 8px;border-radius:var(--radius-sm);padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer}
-.dc-icon{width:44px;height:44px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.dish-card{background:var(--surface);margin:0 16px 8px;border-radius:var(--radius-sm);padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid var(--border);transition:all .15s}
+.dish-card:active{transform:scale(.99);border-color:var(--accent)}
+.dc-icon{width:44px;height:44px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;position:relative}
+.dc-meta-line{font-size:11px;color:var(--text3);font-weight:500;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dc-info{flex:1;min-width:0}
 .dc-name{font-size:14px;font-weight:600;margin-bottom:3px}
 .dc-ings{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dc-meta{display:flex;gap:6px;margin-top:5px;align-items:center;flex-wrap:wrap}
 .badge{font-size:11px;font-weight:500;padding:2px 8px;border-radius:6px;white-space:nowrap}
-.badge-group{background:var(--surface2);color:var(--text2)}
-.badge-freq{color:var(--text3);font-size:11px}
-.badge-sun{background:#FEF9C3;color:#854D0E}
+/* meal-type badges (used in by-group dish cards) */
+.mt-badge.lunch,.mt-badge.dinner{background:#E0F2FE;color:#0369A1}
 .dc-arrow{color:var(--text3);flex-shrink:0}
 
 /* ── PLANNER ── */
-.planner-head{padding:16px 16px 12px;display:flex;align-items:center;justify-content:space-between}
+.planner-head{padding:16px 16px 10px;display:flex;align-items:center;justify-content:space-between}
 .planner-head h2{font-family:'Fraunces',serif;font-size:22px;font-weight:700}
 .week-nav{display:flex;align-items:center;gap:8px}
-.week-nav span{font-size:14px;font-weight:600;min-width:64px;text-align:center}
-.week-nav button{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2)}
-.gen-btn{margin:0 16px 14px;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 32px);transition:opacity .2s}
+.week-nav span{font-size:13px;font-weight:600;min-width:58px;text-align:center}
+.week-nav button{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.planner-view-tabs{display:flex;margin:0 16px 12px;background:var(--surface2);border-radius:10px;padding:3px;gap:3px}
+.planner-view-tab{flex:1;padding:8px 0;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:all .15s}
+.planner-view-tab.active{background:var(--surface);color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.gen-btn{margin:0 16px 12px;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 32px);transition:opacity .2s}
 .gen-btn:active{opacity:.85}
 .save-bar{margin:0 16px 10px;padding:10px 14px;background:var(--amber-lite);border-radius:10px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--amber)}
 .save-bar button{background:var(--amber);color:#fff;border:none;border-radius:7px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
@@ -169,228 +202,69 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 .day-card.skipped .day-hdr{background:var(--surface2)}
 .day-card.locked{border-color:var(--accent);border-width:2px}
 .day-card.locked .day-hdr{background:var(--accent-lite)}
-.day-lock-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;flex-shrink:0}
-.day-lock-btn.locked{background:var(--accent);border-color:var(--accent);color:#fff}
-.day-locked-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--accent);background:var(--accent-lite);padding:2px 7px;border-radius:6px;flex-shrink:0}
-.day-away-banner{padding:14px 14px;display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;font-style:italic}
-.day-skip-toggle{position:relative;display:flex;align-items:center;gap:7px;cursor:pointer;flex-shrink:0}
-.day-skip-toggle input{position:absolute;opacity:0;width:0;height:0}
-.day-skip-slider{width:38px;height:22px;border-radius:11px;background:var(--accent);transition:background .2s;position:relative;flex-shrink:0}
-.day-skip-slider::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.day-skip-toggle.off .day-skip-slider{background:var(--border)}
-.day-skip-toggle.off .day-skip-slider::after{transform:none}
-.day-skip-toggle.on .day-skip-slider::after{transform:translateX(16px)}
-.day-hdr{padding:12px 14px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-.day-hdr-left{display:flex;align-items:center;gap:10px}
-.day-name{font-family:'Fraunces',serif;font-size:17px;font-weight:700}
-.day-type-badge{font-size:11px;font-weight:500;padding:2px 8px;border-radius:6px;background:var(--accent-lite);color:var(--accent)}
-.day-hdr-right{display:flex;gap:6px}
-.share-btn-day{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#25D366}
-.meal-slot{padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--surface2)}
-.meal-slot:last-child{border-bottom:none}
-.slot-label{width:16px;font-size:11px;font-weight:700;color:var(--text3);flex-shrink:0}
-.slot-info{flex:1;min-width:0}
-.slot-name{font-size:13px;font-weight:600}
-.slot-sub{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.slot-actions{display:flex;gap:4px;flex-shrink:0}
-.shuffle-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:14px}
-.slot-type-badge{font-size:10px;font-weight:500;padding:2px 6px;border-radius:5px}
-.slot-type-B{background:#FEF3C7;color:#92400E}
-.slot-type-L{background:#DCFCE7;color:#166534}
-.slot-type-S{background:#EDE9FE;color:#5B21B6}
-.slot-type-D{background:#DBEAFE;color:#1D4ED8}
-.empty-slot{font-size:12px;color:var(--text3);flex:1;font-style:italic}
-
-/* ── DAY ADD-ONS (Dal & Roti) ── */
-.day-addons{padding:8px 14px 10px;border-top:1px dashed var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.addon-toggle{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px;font-weight:600;color:var(--text3);transition:all .15s;white-space:nowrap;user-select:none}
-.addon-toggle.on{background:#F5EFE6;border-color:#C9A87C;color:#7A5C38}
-.addon-toggle .at-icon{font-size:15px}
-.addon-select-wrap{display:flex;align-items:center;gap:0;animation:fadeIn .15s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
-.addon-dropdown{height:32px;padding:0 8px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#7A5C38;background:transparent;outline:none;cursor:pointer;max-width:140px}
-
-/* ── MEAL PICKER ── */
-.mp-row{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--surface2)}
-.mp-row:last-child{border-bottom:none}
-.mp-row:active{background:var(--surface2)}
-.mp-row.selected{background:var(--accent-lite)}
-.mp-bubble{width:44px;height:44px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.mp-row.selected .mp-bubble{background:var(--accent-lite)}
-.mp-info{flex:1;min-width:0}
-.mp-name{font-size:14px;font-weight:600;color:var(--text)}
-.mp-meta{font-size:11px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mp-check{width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.mp-group-hdr{padding:12px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3)}
-.slot-name-clickable{cursor:pointer;display:flex;align-items:center;gap:4px}
-.slot-name-clickable:hover .slot-name{text-decoration:underline;text-decoration-style:dotted;text-underline-offset:2px}
-.slot-name-edit-hint{font-size:10px;color:var(--text3);opacity:.7}
-
-/* ── SHOPPING ── */
-.shop-alert{margin:12px 16px;padding:12px 14px;background:var(--amber-lite);border-radius:12px;border-left:3px solid var(--amber);font-size:13px;color:var(--amber)}
-.shop-section-hdr{padding:12px 16px 6px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px}
-.shop-item{background:var(--surface);margin:0 16px 6px;border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:12px}
-.shop-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.shop-check.checked{background:var(--accent);border-color:var(--accent);color:#fff}
-.shop-item-info{flex:1}
-.shop-item-name{font-size:14px;font-weight:600}
-.shop-item-dishes{font-size:11px;color:var(--text3)}
-.shop-status{font-size:11px;padding:2px 7px;border-radius:5px}
-.shop-status.low{background:var(--amber-lite);color:var(--amber)}
-.shop-status.out{background:var(--red-lite);color:var(--red)}
-.shop-status.in{background:var(--accent-lite);color:var(--accent)}
-
-/* ── PROFILE ── */
-.profile-section{padding:12px 16px}
-.profile-section h3{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
-.counter-row{background:var(--surface);border-radius:var(--radius-sm);padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.counter-row .cr-label{flex:1;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
-.counter-controls{display:flex;align-items:center;gap:10px}
-.counter-controls button{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--text2)}
-.counter-controls span{font-size:16px;font-weight:700;min-width:24px;text-align:center}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat-card{background:var(--surface);border-radius:var(--radius-sm);padding:16px}
-.stat-card .sv{font-family:'Fraunces',serif;font-size:32px;font-weight:700;color:var(--accent);line-height:1}
-.stat-card .sl{font-size:12px;color:var(--text3);margin-top:4px}
-
-.shop-stat-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;cursor:pointer;transition:all .15s}
-.shop-stat-card:hover,.shop-stat-card:active{border-color:var(--accent);background:var(--accent-lite)}
-.shop-stat-icon{font-size:32px;flex-shrink:0;width:44px;text-align:center}
-.shop-stat-info{flex:1;min-width:0}
-.shop-stat-value{font-family:'Fraunces',serif;font-size:30px;font-weight:700;color:var(--accent);line-height:1}
-.shop-stat-label{font-size:13px;color:var(--text2);margin-top:4px;font-weight:500}
-.shop-stat-arrow{font-size:24px;color:var(--text3);flex-shrink:0}
-
-/* ── BOTTOM SHEETS ── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
-.overlay.open{opacity:1;pointer-events:all}
-.sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:430px;background:var(--surface);border-radius:var(--sheet-radius) var(--sheet-radius) 0 0;z-index:101;transition:transform .3s cubic-bezier(.32,1,.45,1);max-height:92dvh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)}
-.sheet.open{transform:translateX(-50%) translateY(0)}
-.sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0}
-.sheet-head{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:2;border-bottom:1px solid var(--border)}
-.sheet-head h3{font-family:'Fraunces',serif;font-size:20px;font-weight:700}
-.sheet-close{width:30px;height:30px;border-radius:8px;background:var(--surface2);border:none;cursor:pointer;font-size:18px;color:var(--text2);display:flex;align-items:center;justify-content:center}
-.sheet-body{padding:16px 20px 24px}
-
-/* ── FORM ELEMENTS ── */
-.form-group{margin-bottom:16px}
-.form-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.form-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg);outline:none;transition:border-color .15s}
-.form-input:focus{border-color:var(--accent)}
-.tag-grid{display:flex;flex-wrap:wrap;gap:8px}
-.tag-btn{padding:8px 14px;min-height:36px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
-.tag-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-/* Meal-type badges on dish cards */
-.mt-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-right:3px;margin-bottom:2px}
-.mt-badge.breakfast{background:#fff7ed;color:#c2410c}
-.mt-badge.lunch    {background:#f0fdf4;color:#166534}
-.mt-badge.dinner   {background:#eff6ff;color:#1d4ed8}
-.mt-badge.snack    {background:#faf5ff;color:#6b21a8}
-.mt-badge.starter  {background:#fdf2f8;color:#9d174d}
-.tag-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.status-tabs{display:flex;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)}
-.status-tab{flex:1;padding:9px 4px;text-align:center;font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;color:var(--text3);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px}
-.status-tab.in.active{background:#DCFCE7;color:#166534}
-.status-tab.low.active{background:var(--amber-lite);color:var(--amber)}
-.status-tab.out.active{background:var(--red-lite);color:var(--red)}
-.icon-hero{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
-.icon-big{width:64px;height:64px;border-radius:16px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;position:relative;flex-shrink:0}
-.icon-big:hover::after{content:'✎';position:absolute;bottom:2px;right:4px;font-size:11px;color:var(--text3)}
-.icon-hero-wrap{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
-.icon-gen-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;font-size:12px;font-weight:500;color:var(--text2);font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .15s}
-.icon-gen-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lite)}
-.icon-gen-btn.loading{opacity:.6;pointer-events:none}
-.ing-name-input{width:100%;font-family:'Fraunces',serif;font-size:20px;font-weight:700;border:none;border-bottom:2px solid var(--border);background:none;outline:none;color:var(--text);padding-bottom:4px;transition:border-color .15s}
-.ing-name-input:focus{border-bottom-color:var(--accent)}
-.save-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s;margin-top:8px}
-.save-btn:active{opacity:.85}
-.delete-btn{color:var(--red);font-size:13px;font-weight:500;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:4px}
-.linked-dishes-list{display:flex;flex-direction:column;gap:6px}
-.ld-item{background:var(--bg);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;font-size:13px}
-.ld-item .ldi-name{font-weight:600;flex:1}
-.ld-item .ldi-meta{font-size:11px;color:var(--text3)}
-
-/* ingredient search dropdown */
-.ing-search-wrap{position:relative}
-.ing-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;max-height:180px;overflow-y:auto;z-index:10;box-shadow:0 8px 24px rgba(0,0,0,.1)}
-.ing-opt{padding:10px 14px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--surface2)}
-.ing-opt:last-child{border-bottom:none}
-.ing-opt:active{background:var(--surface2)}
-.ing-tag{display:inline-flex;align-items:center;gap:5px;background:var(--accent-lite);color:var(--accent-text);padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;margin:2px}
-.ing-tag button{background:none;border:none;cursor:pointer;color:var(--accent-text);font-size:14px;line-height:1;padding:0 0 0 2px}
-
-/* freq stepper */
-.freq-stepper{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:12px;padding:10px 14px}
-.freq-stepper button{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--text2)}
-.freq-stepper span{flex:1;text-align:center;font-size:15px;font-weight:600}
-.freq-stepper em{font-style:normal;font-size:12px;color:var(--text3)}
-
-/* day restriction pills */
-.day-pills{display:flex;gap:6px;flex-wrap:wrap}
-.day-pill{padding:6px 10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--text3);transition:all .15s}
-.day-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.day-restrict-toggle{display:flex;border-radius:10px;overflow:hidden;border:1.5px solid var(--border);margin-bottom:10px}
-.day-restrict-toggle button{flex:1;padding:9px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;color:var(--text3)}
-.day-restrict-toggle button.active{background:var(--accent);color:#fff}
-
-/* planner settings */
-/* Meal component rows in settings */
-.comp-cfg-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px}
-.comp-cfg-emoji{font-size:18px;width:26px;text-align:center;flex-shrink:0}
-.comp-cfg-info{flex:1;min-width:0}
-.comp-cfg-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
-.comp-cfg-select{font-size:11px;color:var(--text3);background:none;border:none;font-family:'DM Sans',sans-serif;cursor:pointer;padding:0;max-width:150px;outline:none}
-.comp-cfg-name-input{border:none;background:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);outline:none;width:100%;padding:0;cursor:text}
-
-/* Dish Group Manager */
-.gm-section-hdr{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
-/* Group Manager — 2 clean tabs */
-.gm-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface)}
-.gm-tab{flex:1;padding:11px 8px;background:none;border:none;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;margin-bottom:-1px}
-.gm-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.gm-panel{display:none;overflow-y:auto;padding:14px 20px 80px}
-.gm-panel.active{display:block}
-/* Component cards — inline chip editing */
-.gm-comp-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px}
-.gm-comp-card-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.gm-comp-name-input{border:none;background:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);outline:none;flex:1;padding:0;min-width:0}
-.gm-comp-groups{display:flex;flex-wrap:wrap;gap:5px}
-.gm-comp-chip{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);transition:all .12s;user-select:none}
-.gm-comp-chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-.gm-comp-chip.disabled{opacity:.35;cursor:not-allowed}
-/* Dish group rows in tab 2 — read-only list */
-.grp-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px}
-.grp-row-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
-.grp-row-info{flex:1;min-width:0}
-.grp-row-name{font-size:13px;font-weight:600;color:var(--text)}
-.grp-row-comp{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
-.grp-comp-badge{font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;background:var(--accent-lite);color:var(--accent-text)}
-.grp-comp-unassigned{font-size:10px;color:var(--text3);font-style:italic}
-.grp-row-count{font-size:11px;color:var(--text3);flex-shrink:0;min-width:28px;text-align:right}
-.grp-row-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:3px;flex-shrink:0}
-.grp-row-del:hover{color:var(--red)}
-.adr-comp-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 14px;margin-bottom:8px}
-.adr-comp-hdr{display:flex;align-items:center;gap:8px}
-.adr-comp-name{flex:1;font-size:13px;font-weight:600;color:var(--text)}
-.adr-group-section{margin-top:10px;padding-top:8px;border-top:1px solid var(--surface2)}
-.adr-group-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
-.adr-group-chips{display:flex;flex-wrap:wrap;gap:5px}
-.adr-group-chip{padding:4px 9px;border-radius:16px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);transition:all .12s}
-.adr-group-chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-.adr-group-chip.warn{border-color:#D97706;color:#92400E;background:#FEF3C7}
-.adr-no-groups{font-size:11px;color:var(--text3);font-style:italic}
-.comp-meal-hdr{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);margin:14px 0 6px 2px;padding-top:4px;border-top:1px solid var(--border)}
-.comp-meal-hdr:first-child{border-top:none;margin-top:0}
-
-/* Day card component rows */
+.day-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 10px 14px;border-bottom:1px solid var(--surface2);background:var(--surface2)}
+.day-hdr-left{display:flex;align-items:center;gap:8px;min-width:0}
+.day-hdr-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.day-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap}
+.day-locked-badge{font-size:10px;font-weight:600;color:var(--accent);background:var(--accent-lite);border-radius:4px;padding:2px 6px}
+.day-lock-btn{width:28px;height:28px;background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+.day-lock-btn.locked{border-color:var(--accent);background:var(--accent-lite)}
+.share-btn-day{width:28px;height:28px;background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center}
+.share-btn-day:active{background:var(--surface2)}
+.day-skip-toggle{width:40px;height:22px;border-radius:11px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.day-skip-toggle.on{background:var(--accent);border-color:var(--accent)}
+.day-skip-toggle.off{background:var(--surface2)}
+.day-skip-slider{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.day-skip-toggle.on .day-skip-slider{transform:translateX(18px)}
+.day-away-banner{padding:12px 14px;font-size:13px;color:var(--text3);font-style:italic;text-align:center}
 .meal-section{padding:8px 14px 4px}
 .meal-section-hdr{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--surface2)}
-.comp-row{display:flex;align-items:center;gap:8px;padding:4px 0}
-.comp-row:last-child{}
-.comp-label{font-size:11px;font-weight:600;color:var(--text3);width:58px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.comp-dish{flex:1;min-width:0;cursor:pointer;display:flex;align-items:center;gap:4px}
-.comp-dish-name{font-size:13px;color:var(--text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dr-add-btn{width:100%;padding:11px;border:1.5px dashed var(--border);border-radius:12px;background:var(--surface);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;margin-top:6px;text-align:center}
+.comp-row{display:flex;align-items:center;gap:0;padding:5px 0;min-height:36px}
+.comp-label{font-size:11px;font-weight:700;color:var(--text3);width:52px;flex-shrink:0;letter-spacing:.2px}
+.comp-dish{flex:1;min-width:0;cursor:pointer;display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:8px;background:transparent;transition:background .12s}
+.comp-dish.slot-name-clickable:active{background:var(--surface2)}
+.comp-dish-name{font-size:13px;color:var(--text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.slot-name-edit-hint{font-size:10px;color:var(--text3);flex-shrink:0}
+.shuffle-btn{width:28px;height:28px;background:var(--tile);border:1px solid var(--border);border-radius:7px;font-size:13px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.shuffle-btn:active{background:var(--accent-lite);color:var(--accent);border-color:var(--accent)}
+/* Selected-ingredient chips inside dish form */
+.ing-tag{display:inline-flex;align-items:center;gap:4px;padding:5px 4px 5px 10px;border:1.5px solid var(--accent);background:var(--accent-lite);color:var(--accent-text);border-radius:14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;line-height:1.2;white-space:nowrap}
+.ing-tag button{width:18px;height:18px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;flex-shrink:0}
+.ing-tag button:active{background:var(--accent-text)}
+
+/* Meal picker sheet list items */
+.mp-row{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;border-bottom:1px solid var(--surface2);transition:background .12s}
+.mp-row:active{background:var(--surface2)}
+.mp-row.selected{background:var(--accent-lite)}
+.mp-bubble{width:38px;height:38px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.mp-row.selected .mp-bubble{background:var(--accent-lite)}
+.mp-info{flex:1;min-width:0}
+.mp-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-meta{font-size:11px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-check{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+/* By Meal Type view */
+.cv-section-hdr{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);padding:14px 16px 8px;background:var(--bg);position:sticky;top:0;z-index:1;border-bottom:1px solid var(--surface2)}
+.cv-comp-block{margin-bottom:4px}
+.cv-comp-label{font-size:13px;font-weight:700;color:var(--text);padding:12px 16px 8px;display:flex;align-items:center;gap:6px}
+.cv-days-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 16px 14px}
+.cv-days-row::-webkit-scrollbar{display:none}
+/* Fixed-height tile — 130px tall so all 7 are identical regardless of name length */
+.cv-day-cell{width:100%;min-height:132px;border-radius:10px;padding:0;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.cv-day-cell.cv-filled{background:var(--surface);border:1.5px solid var(--border)}
+.cv-day-cell.cv-filled:active{transform:scale(.96);border-color:var(--accent)}
+.cv-day-cell.cv-empty{background:var(--surface2);border:1.5px dashed var(--border)}
+.cv-day-cell.cv-skipped{background:var(--surface2);border:1.5px solid transparent;opacity:.35;cursor:default}
+/* Day label strip at top */
+.cv-day-label{width:100%;padding:4px 0 3px;text-align:center;font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--surface2);flex-shrink:0}
+/* Content area grows to fill space */
+.cv-cell-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:5px 4px 2px;width:100%}
+.cv-day-emoji{font-size:22px;line-height:1;flex-shrink:0;margin-top:4px}
+.cv-day-name{font-size:10px;font-weight:600;color:var(--text);line-height:1.3;text-align:center;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:100%;padding:0 2px}
+.cv-day-cell.cv-empty .cv-day-emoji{font-size:18px;color:var(--border)}
+.cv-day-cell.cv-empty .cv-day-name{color:var(--text3);font-weight:400}
+/* Shuffle strip at bottom */
+.cv-shuffle{width:100%;border:none;border-top:1px solid var(--surface2);background:var(--tile);font-size:10px;color:var(--text3);cursor:pointer;padding:4px 0;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:3px;font-family:'DM Sans',sans-serif;transition:background .15s}
+.cv-shuffle:active{background:var(--accent-lite);color:var(--accent)}.dr-add-btn{width:100%;padding:11px;border:1.5px dashed var(--border);border-radius:12px;background:var(--surface);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;margin-top:6px;text-align:center}
 .dr-add-btn:hover{border-color:var(--accent);background:var(--accent-lite)}
 .day-rule-row{background:var(--bg);border:1px solid var(--border);border-radius:12px;margin-bottom:6px;overflow:hidden}
 .day-rule-hdr{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
@@ -399,21 +273,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 .day-rule-hdr .dr-remove{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px;flex-shrink:0;line-height:1}
 .day-rule-hdr .dr-edit{background:none;border:none;cursor:pointer;color:var(--accent);font-size:16px;padding:4px;flex-shrink:0;line-height:1}
 .day-rule-hdr .dr-remove:hover{color:var(--red)}
-.day-rule-body{padding:0 14px 14px;display:none}
-.day-rule-body.open{display:block}
-.day-rule-locked{background:var(--accent-lite);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.day-rule-locked .dr-day{font-size:14px;font-weight:600;flex:1;display:flex;align-items:center;gap:8px}
-.day-rule-locked .dr-lock{font-size:12px;color:var(--accent-text);background:var(--surface);padding:3px 8px;border-radius:6px;font-weight:600}
 /* Add rule sheet day chips */
 .adr-day-chips{display:flex;flex-wrap:wrap;gap:8px}
-.adr-day-chip{padding:8px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .12s}
-.adr-day-chip.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+.adr-day-chip{padding:8px 14px;border-radius:22px;border:1.5px solid var(--border);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s;line-height:1}
+.adr-day-chip:hover{border-color:var(--text3)}
+.adr-day-chip.selected{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 8px rgba(61,107,79,.18)}
 .adr-day-chip.taken{opacity:.4;pointer-events:none;cursor:not-allowed}
-.dr-select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--bg);outline:none;margin-bottom:8px}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-.toggle-row:last-child{border-bottom:none}
-.toggle-row .tr-label{font-size:14px;color:var(--text2)}
-.toggle-row .tr-sub{font-size:12px;color:var(--text3)}
 .toggle{width:44px;height:24px;border-radius:12px;background:var(--border);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
 .toggle.on{background:var(--accent)}
 .toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
@@ -431,6 +296,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 .add-row .emoji-pick{width:44px;height:44px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .add-row input{flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg);outline:none}
 .add-row .add-confirm{padding:10px 16px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+/* Dish group / Meal type / Category manager rows */
+.grp-row,.manager-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--tile);border-radius:12px;margin-bottom:8px;border:1px solid var(--border)}
+.grp-row-icon,.mi-icon{width:38px;height:38px;border-radius:10px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.grp-row-info,.mi-info{flex:1;min-width:0}
+.grp-row-name,.mi-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grp-row-count,.mi-count{font-size:11px;color:var(--text3);background:var(--surface);padding:3px 8px;border-radius:6px;font-weight:600}
+.grp-row-del,.mi-del{width:32px;height:32px;border-radius:8px;border:none;background:transparent;font-size:14px;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.grp-row-del:active,.mi-del:active{background:var(--red-lite);color:var(--red)}
+.mi-locked{font-size:10px;color:var(--text3);font-style:italic;flex-shrink:0}
 
 /* toast */
 .toast{position:fixed;bottom:calc(var(--tab-h) + 16px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;z-index:200;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
@@ -448,7 +322,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* whatsapp share */
-.wa-btn{background:#25D366;color:#fff;border:none;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:8px;width:100%;justify-content:center;margin-top:12px}
 
 /* scrollbar */
 ::-webkit-scrollbar{width:4px}
@@ -482,11 +355,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 .ob-summary-text{flex:1}
 .ob-summary-label{font-size:14px;font-weight:600;color:var(--text)}
 .ob-summary-val{font-size:12px;color:var(--text3);margin-top:2px}
-.ob-hh-row{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:14px;padding:16px;margin-bottom:12px}
-.ob-hh-label{flex:1;font-size:15px;font-weight:500}
-.ob-hh-controls{display:flex;align-items:center;gap:12px}
-.ob-hh-controls button{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;color:var(--text2)}
-.ob-hh-controls span{font-size:17px;font-weight:700;min-width:24px;text-align:center}
 
 /* Profile database section */
 .db-card{background:var(--surface);border-radius:var(--radius);padding:14px;margin-bottom:10px;border:1px solid var(--border)}
@@ -498,20 +366,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 .db-btn.primary{border-color:var(--accent);color:var(--accent);background:var(--accent-lite)}
 
 /* Profile switcher */
-.prof-row{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer;transition:all .15s}
-.prof-row.active{border-color:var(--accent);background:var(--accent-lite)}
-.prof-avatar{width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;flex-shrink:0;letter-spacing:.5px}
-.prof-avatar.alt{background:#B45309}
-.prof-avatar.alt2{background:#5B21B6}
-.prof-avatar.alt3{background:#1D4ED8}
-.prof-avatar.alt4{background:#166534}
-.prof-info{flex:1;min-width:0}
-.prof-name{font-size:15px;font-weight:600;color:var(--text)}
-.prof-meta{font-size:12px;color:var(--text3);margin-top:2px}
-.prof-active-badge{font-size:10px;font-weight:700;color:var(--accent);background:#fff;padding:2px 7px;border-radius:5px;border:1px solid var(--accent)}
-.prof-del-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:6px;opacity:.6}
-.prof-del-btn:hover{opacity:1;color:var(--red)}
-.prof-add-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:var(--surface);border:1.5px dashed var(--border);border-radius:14px;color:var(--accent);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px}
 
 /* ── LOGIN ── */
 #login-screen{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column;max-width:430px;margin:0 auto;overflow:hidden}
@@ -587,21 +441,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 .nb-diet-btn.selected{background:var(--accent-lite);border-color:var(--accent);color:var(--accent-text)}
 
 /* Screen 2 — Cuisine cards */
-.nb-cuisine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.nb-cuisine-card{padding:16px 12px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;text-align:center;transition:all .15s;position:relative}
-.nb-cuisine-card.selected{border-color:var(--accent);background:var(--accent-lite)}
-.nb-cuisine-card .nb-c-icon{font-size:32px;margin-bottom:8px}
-.nb-cuisine-card .nb-c-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
-.nb-cuisine-card .nb-c-desc{font-size:11px;color:var(--text3);line-height:1.4}
-.nb-cuisine-card .nb-check{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700}
-.nb-cuisine-card.selected .nb-check{display:flex}
 
 /* Screen 3 — Dish selection */
-.nb-meal-tabs{display:flex;gap:6px;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:12px}
-.nb-meal-tab{flex:1;padding:8px 4px;border-radius:8px;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s;white-space:nowrap}
-.nb-meal-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.06)}
-.nb-meal-count{font-size:12px;color:var(--text3);margin-bottom:10px;text-align:right;font-weight:500}
-.nb-meal-count strong{color:var(--accent)}
 .nb-dish-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding-bottom:20px}
 .nb-dish-card{padding:10px 6px;border-radius:12px;border:2px solid var(--border);background:var(--surface);cursor:pointer;text-align:center;position:relative;transition:all .15s;min-height:100px;display:flex;flex-direction:column;justify-content:center}
 .nb-dish-card.selected{border-color:var(--accent);background:var(--accent-lite)}
@@ -611,7 +452,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 .nb-dish-card .nb-d-group{font-size:9px;color:var(--text3);padding:2px 5px;background:var(--surface2);border-radius:4px;display:inline-block}
 .nb-dish-card .nb-check{position:absolute;top:5px;right:5px;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700}
 .nb-dish-card.selected .nb-check{display:flex}
-.nb-manual-add{text-align:center;padding:16px;margin:10px 0;border:1.5px dashed var(--border);border-radius:12px;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;background:var(--surface)}
 
 /* Screen 4 — Stock check */
 .nb-stock-group-label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin:18px 0 8px;padding:0 2px}
@@ -637,6 +477,17 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 /* ── BROWSE & ADD ── */
 .browse-cta{display:flex;align-items:center;gap:12px;margin:8px 16px 14px;padding:14px 16px;background:linear-gradient(135deg,var(--accent-lite) 0%,#fff 100%);border:1.5px solid var(--border);border-radius:14px;cursor:pointer;transition:all .15s}
 .browse-cta:hover{border-color:var(--accent);transform:translateY(-1px)}
+
+/* ── Overlay + Sheet base (required for all bottom sheets) ── */
+.overlay{position:fixed;inset:0;background:rgba(28,25,23,.32);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.overlay.open{opacity:1;pointer-events:all}
+.sheet{position:fixed;bottom:0;left:50%;transform:translate(-50%,100%);width:100%;max-width:430px;background:var(--surface);border-radius:20px 20px 0 0;z-index:201;transition:transform .3s cubic-bezier(.4,0,.2,1);padding:0 0 env(safe-area-inset-bottom);box-shadow:0 -4px 32px rgba(0,0,0,.15)}
+.sheet.open{transform:translate(-50%,0)}
+.sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px}
+.sheet-head h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700}
+.sheet-close{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2)}
+.sheet-body{padding:0 20px 24px;overflow-y:auto;max-height:60vh}
 
 /* Browse sheet — override .sheet defaults to use flex layout */
 .browse-sheet-flex{
@@ -757,6 +608,106 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 /* Already-added section */
 .browse-added-section{opacity:.85;margin-top:6px;padding-top:14px;border-top:1px dashed var(--border)}
 .browse-added-section .browse-section-head{color:var(--text3)}
+
+/* ── Sheet detail layout (sticky save footer) ── */
+.sheet-detail{max-height:90dvh;display:flex;flex-direction:column;padding:0;overflow:hidden}
+.sheet-detail .sheet-handle{flex-shrink:0}
+.sheet-detail .sheet-head{flex-shrink:0;padding:14px 20px 16px;border-bottom:1px solid var(--border)}
+.sheet-detail .sheet-head h3{font-family:'Fraunces',serif;font-size:24px;font-weight:700}
+.sheet-body-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 20px 12px}
+.sheet-footer{flex-shrink:0;padding:12px 20px calc(16px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -4px 12px rgba(0,0,0,.04)}
+
+/* ── Icon hero (top section of detail sheets) ── */
+.icon-hero{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px}
+.icon-hero-wrap{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;padding-top:8px}
+.icon-big{width:96px;height:96px;border-radius:18px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:48px;cursor:pointer;flex-shrink:0;transition:all .15s}
+.icon-big:active{transform:scale(.96);background:var(--accent-lite)}
+.icon-gen-btn{background:var(--surface2);border:none;border-radius:8px;padding:8px 14px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text2);cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;width:100%}
+.icon-gen-btn:active{background:var(--accent-lite);color:var(--accent)}
+
+/* ── Name input (Fraunces serif, underline only) ── */
+.ing-name-input{width:100%;padding:6px 0 10px;border:none;border-bottom:1.5px solid var(--border);font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--text);background:transparent;outline:none;transition:border .15s;box-sizing:border-box;letter-spacing:-.3px}
+.ing-name-input:focus{border-bottom-color:var(--accent)}
+.ing-name-input::placeholder{color:var(--text3);font-weight:600}
+
+/* ── Form pieces ── */
+.form-group{margin-bottom:22px}
+.form-label{font-size:12px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.form-label-action{font-weight:500;text-transform:none;letter-spacing:0;cursor:pointer;color:var(--accent);font-size:13px;display:flex;align-items:center;gap:4px}
+.form-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--surface);outline:none;box-sizing:border-box;transition:border .15s}
+.form-input:focus{border-color:var(--accent)}
+.tag-grid{display:flex;flex-wrap:wrap;gap:8px}
+
+/* ── Status tabs (segmented control) ── */
+.status-tabs{display:flex;border-radius:12px;overflow:hidden;background:var(--surface);border:1.5px solid var(--border)}
+.status-tab{flex:1;padding:12px 4px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--text2);transition:all .15s;border-right:1.5px solid var(--border)}
+.status-tab:last-child{border-right:none}
+.status-tab.in.active{background:var(--accent);color:#fff}
+.status-tab.low.active{background:#FEF3C7;color:#92400E}
+.status-tab.out.active{background:#FEE2E2;color:#991B1B}
+
+/* ── Linked dishes (full-width pill cards, like screenshot) ── */
+.linked-dishes-list{display:flex;flex-direction:column;gap:8px}
+.ld-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--tile);border-radius:12px;font-size:13px;border:1px solid var(--border)}
+.ld-item span:first-child{font-size:20px;flex-shrink:0}
+.ldi-name{font-weight:700;color:var(--text);flex:1;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ldi-meta{font-size:12px;color:var(--text3);flex-shrink:0}
+
+/* ── Delete + Save buttons ── */
+.delete-btn{padding:7px 14px;border-radius:9px;border:none;background:transparent;color:var(--red);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.delete-btn:active{background:var(--red-lite)}
+.save-btn{width:100%;padding:15px;background:var(--accent);color:#fff;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.save-btn:active{opacity:.85}
+
+/* ── Frequency stepper ── */
+.freq-stepper{display:flex;align-items:center;gap:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:6px 14px;width:fit-content}
+.freq-stepper button{width:32px;height:32px;border-radius:8px;border:none;background:var(--surface2);color:var(--text);font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.freq-stepper button:active{background:var(--accent-lite);color:var(--accent)}
+.freq-stepper-val{font-family:'Fraunces',serif;font-size:20px;font-weight:700;min-width:24px;text-align:center}
+
+/* ── Ingredient search dropdown ── */
+.ing-search-wrap{position:relative}
+.ing-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:10;max-height:200px;overflow-y:auto}
+
+/* ── Shopping list ── */
+.shop-section-hdr{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);padding:12px 16px 8px;display:flex;align-items:center;gap:6px}
+.shop-item{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:12px 14px;margin:0 16px 8px}
+.shop-item-info{flex:1;min-width:0}
+.shop-item-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shop-item-dishes{font-size:11px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shop-status{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;flex-shrink:0;white-space:nowrap}
+.shop-status.in{background:#DCFCE7;color:#15803D}
+.shop-status.low{background:#FEF3C7;color:#92400E}
+.shop-status.out{background:#FEE2E2;color:#991B1B}
+.shop-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;background:var(--surface)}
+.shop-check.checked{background:var(--accent);border-color:var(--accent)}
+.shop-check.checked::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
+
+/* Add Day Rule sheet */
+.adr-conflict-msg{margin:10px 0 0;padding:10px 12px;background:var(--amber-lite);border-radius:10px;font-size:12px;color:var(--amber);line-height:1.5;border:1px solid #FCD34D}
+.form-help{font-size:12px;color:var(--text3);margin-top:-4px;margin-bottom:12px;line-height:1.5}
+
+/* Add Day Rule — content styles */
+.comp-meal-hdr{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);padding:6px 0;margin-bottom:8px;border-bottom:1px solid var(--surface2)}
+
+.adr-comp-card{background:var(--tile);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;transition:opacity .15s}
+.adr-comp-hdr{display:flex;align-items:center;gap:10px}
+.adr-comp-name{flex:1;font-size:14px;font-weight:600;color:var(--text)}
+
+.adr-group-section{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.adr-group-label{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:8px}
+.adr-group-chips{display:flex;flex-wrap:wrap;gap:6px}
+
+.adr-group-chip{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:18px;border:1.5px solid var(--border);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;line-height:1}
+.adr-group-chip:hover{border-color:var(--text3)}
+.adr-group-chip.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 6px rgba(61,107,79,.15)}
+.adr-group-chip.warn{background:var(--amber-lite);color:var(--amber);border-color:#FCD34D}
+.adr-group-chip.warn.on{background:var(--amber);color:#fff;border-color:var(--amber)}
+
+.adr-no-groups{font-size:12px;color:var(--text3);font-style:italic;padding:8px 4px}
+
+/* Force bottom safe-area to match nav surface — kills any dark iOS chrome bleed */
+body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:env(safe-area-inset-bottom);background:var(--surface);z-index:999;pointer-events:none}
 </style>
 </head>
 <body>
@@ -1105,6 +1056,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 
     <!-- PLANNER -->
     <div class="screen" id="screen-planner">
+      <!-- Header row: title + settings -->
       <div class="planner-head">
         <h2>Monthly Plan</h2>
         <div style="display:flex;gap:8px;align-items:center">
@@ -1117,6 +1069,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
             <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </div>
         </div>
+      </div>
+      <!-- View toggle tab bar -->
+      <div class="planner-view-tabs">
+        <button id="pv-day-btn"  class="planner-view-tab active" onclick="setPlannerView('day')">By Day</button>
+        <button id="pv-comp-btn" class="planner-view-tab"        onclick="setPlannerView('comp')">By Meal Type</button>
       </div>
       <button class="gen-btn" onclick="generatePlan()">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1220,7 +1177,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 
 <!-- ═══ INGREDIENT SHEET ═══ -->
 <div class="overlay" id="ing-overlay" onclick="closeIngSheet()"></div>
-<div class="sheet" id="ing-sheet">
+<div class="sheet sheet-detail" id="ing-sheet">
   <div class="sheet-handle"></div>
   <div class="sheet-head">
     <h3 id="ing-sheet-title">Add Ingredient</h3>
@@ -1229,7 +1186,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
       <button class="sheet-close" onclick="closeIngSheet()">✕</button>
     </div>
   </div>
-  <div class="sheet-body">
+  <div class="sheet-body sheet-body-scroll">
     <div class="icon-hero">
       <div class="icon-big" id="ing-icon-display" onclick="toggleIngIconPicker()">🥬</div>
       <div class="icon-hero-wrap">
@@ -1237,7 +1194,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
       </div>
     </div>
     <div class="form-group">
-      <div class="form-label">Category <span style="font-weight:400;text-transform:none;letter-spacing:0;cursor:pointer;color:var(--accent)" onclick="openCatManager()">⚙ Manage</span></div>
+      <div class="form-label">Category <span class="form-label-action" onclick="openCatManager()">⚙ Manage</span></div>
       <div class="tag-grid" id="ing-cat-tags"></div>
     </div>
     <div class="form-group">
@@ -1249,16 +1206,18 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
       </div>
     </div>
     <div class="form-group" id="linked-dishes-section">
-      <div class="form-label">Linked Dishes <span style="font-weight:400;text-transform:none;letter-spacing:0;cursor:pointer;color:var(--accent)" onclick="switchTab('dishes');closeIngSheet()">Go to Dishes ›</span></div>
+      <div class="form-label">Linked Dishes <span class="form-label-action" onclick="switchTab('dishes');closeIngSheet()">Go to Dishes ›</span></div>
       <div class="linked-dishes-list" id="linked-dishes-list"></div>
     </div>
+  </div>
+  <div class="sheet-footer">
     <button class="save-btn" onclick="saveIngredient()">Save Changes</button>
   </div>
 </div>
 
 <!-- ═══ DISH SHEET ═══ -->
 <div class="overlay" id="dish-overlay" onclick="closeDishSheet()"></div>
-<div class="sheet" id="dish-sheet">
+<div class="sheet sheet-detail" id="dish-sheet">
   <div class="sheet-handle"></div>
   <div class="sheet-head">
     <h3 id="dish-sheet-title">Add Dish</h3>
@@ -1267,7 +1226,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
       <button class="sheet-close" onclick="closeDishSheet()">✕</button>
     </div>
   </div>
-  <div class="sheet-body">
+  <div class="sheet-body sheet-body-scroll">
     <div class="icon-hero">
       <div class="icon-big" id="dish-icon-display" onclick="cycleDishIcon()">🍽</div>
       <div class="icon-hero-wrap">
@@ -1277,24 +1236,24 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
     </div>
     <div class="form-group">
       <div class="form-label">Ingredients (from Pantry)</div>
-      <div id="dish-ing-tags" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px"></div>
+      <div id="dish-ing-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
       <div class="ing-search-wrap">
         <input class="form-input" id="dish-ing-search" placeholder="Search pantry or type new…" oninput="showIngDropdown()" autocomplete="off">
         <div class="ing-dropdown" id="ing-dropdown" style="display:none"></div>
       </div>
     </div>
     <div class="form-group">
-      <div class="form-label">Meal Type</div>
+      <div class="form-label">Meal Type <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--text3);font-size:11px">Select one or more</span></div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:8px;margin-top:-4px">When should this dish be planned?</div>
       <div class="tag-grid" id="dish-mealtype-tags"></div>
     </div>
     <div class="form-group" id="dish-component-group">
-      <div class="form-label">Meal Component</div>
+      <div class="form-label">Meal Component <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--text3);font-size:11px">Select one or more</span></div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:8px;margin-top:-4px">Which slot does this dish fill in the plan?</div>
       <div class="tag-grid" id="dish-component-tags"></div>
     </div>
     <div class="form-group">
-      <div class="form-label">Dish Group <span style="font-weight:400;text-transform:none;letter-spacing:0;cursor:pointer;color:var(--accent)" onclick="openGroupManager()">⚙ Manage</span></div>
+      <div class="form-label">Dish Group <span class="form-label-action" onclick="openGroupManager()">⚙ Manage</span></div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:8px;margin-top:-4px">For browsing and filtering only</div>
       <div class="tag-grid" id="dish-group-tags"></div>
     </div>
@@ -1302,27 +1261,18 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
       <div class="form-label">Frequency / Month</div>
       <div class="freq-stepper">
         <button onclick="adjFreq(-1)">−</button>
-        <span id="freq-val">2</span>
-        <em>times this month</em>
+        <span class="freq-stepper-val" id="freq-val">2</span>
+        <em style="font-style:normal;font-size:12px;color:var(--text3)">times this month</em>
         <button onclick="adjFreq(1)">+</button>
       </div>
     </div>
+  </div>
+  <div class="sheet-footer">
     <button class="save-btn" onclick="saveDish()">Save Dish</button>
   </div>
 </div>
 
-<!-- ═══ STOCK POPUP ═══ -->
-<div class="overlay" id="stock-overlay" onclick="closeStockPopup()"></div>
-<div class="sheet" id="stock-sheet" style="max-height:280px">
-  <div class="sheet-handle"></div>
-  <div class="sheet-body" style="padding-top:12px">
-    <div style="font-size:14px;font-weight:600;margin-bottom:12px" id="stock-popup-name">Update Stock</div>
-    <div class="status-tabs">
-      <button class="status-tab in" id="sp-in" onclick="setStockFromPopup('in')">✓ In Stock</button>
-      <button class="status-tab low" id="sp-low" onclick="setStockFromPopup('low')">⚠ Low</button>
-      <button class="status-tab out" id="sp-out" onclick="setStockFromPopup('out')">✕ Out</button>
-    </div>
-  </div>
+
 </div>
 
 <!-- ═══ CATEGORY MANAGER ═══ -->
@@ -1356,19 +1306,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
   </div>
 </div>
 
-<!-- ═══ MEAL TYPE MANAGER ═══ -->
-<div class="overlay" id="mt-overlay" onclick="closeMealTypeManager()"></div>
-<div class="sheet" id="mt-sheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-head"><h3>Manage Meal Types</h3><button class="sheet-close" onclick="closeMealTypeManager()">✕</button></div>
-  <div class="sheet-body">
-    <div class="manager-list" id="mt-manager-list"></div>
-    <div class="add-row">
-      <div class="emoji-pick" id="new-mt-emoji" onclick="cycleEmoji('mt')">🍽</div>
-      <input class="form-input" id="new-mt-name" placeholder="New meal type…" style="margin:0" oninput="autoGenManagerEmoji('mt')">
-      <button class="add-confirm" onclick="addMealType()">Add</button>
-    </div>
-  </div>
+
 </div>
 
 <!-- ═══ PLANNER SETTINGS ═══ -->
@@ -1398,23 +1336,29 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 
 <!-- ═══ ADD / EDIT DAY RULE SHEET ═══ -->
 <div class="overlay" id="adr-overlay" onclick="closeAddDayRuleSheet()"></div>
-<div class="sheet" id="adr-sheet" style="max-height:92dvh;display:flex;flex-direction:column;padding:0;overflow:hidden">
-  <div class="sheet-handle" style="flex-shrink:0"></div>
-  <div class="sheet-head" style="flex-shrink:0;padding:8px 20px 10px">
+<div class="sheet sheet-detail" id="adr-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
     <h3 id="adr-title">Add Day Rule</h3>
     <button class="sheet-close" onclick="closeAddDayRuleSheet()">✕</button>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:0 20px 30px">
+  <div class="sheet-body sheet-body-scroll">
     <!-- Day picker -->
-    <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Day</div>
-    <div class="adr-day-chips" id="adr-day-chips"></div>
-    <div id="adr-conflict-msg" style="display:none;margin:8px 0;padding:10px 12px;background:#FEF3C7;border-radius:8px;font-size:12px;color:#92400E;line-height:1.5"></div>
+    <div class="form-group">
+      <div class="form-label">Day</div>
+      <div class="adr-day-chips" id="adr-day-chips"></div>
+      <div id="adr-conflict-msg" class="adr-conflict-msg" style="display:none"></div>
+    </div>
 
     <!-- Component rules -->
-    <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin:16px 0 4px">Component Rules</div>
-    <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5">Toggle a component off to skip it. When on, optionally restrict which dish groups it picks from.</div>
-    <div id="adr-comp-list"></div>
-    <button class="save-btn" onclick="saveAddDayRule()" style="margin-top:16px">Save Rule</button>
+    <div class="form-group">
+      <div class="form-label">Component Rules</div>
+      <div class="form-help">Toggle a component off to skip it. When on, optionally restrict which dish groups it picks from.</div>
+      <div id="adr-comp-list"></div>
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="save-btn" onclick="saveAddDayRule()">Save Rule</button>
   </div>
 </div>
 
@@ -1488,7 +1432,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
   </div>
 </div>
 
-
 <!-- ═══ RE-RUN SETUP CONFIRM SHEET ═══ -->
 <div class="overlay" id="rerun-overlay" onclick="cancelRerunSetup()"></div>
 <div class="sheet" id="rerun-sheet" style="max-height:300px">
@@ -1506,7 +1449,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 
 <!-- ═══ MEAL PICKER SHEET ═══ -->
 <div class="overlay" id="mp-overlay" onclick="closeMealPicker()"></div>
-<div class="sheet" id="mp-sheet" style="max-height:88dvh;display:flex;flex-direction:column;padding:0;overflow:hidden">
+<div class="sheet" id="mp-sheet" style="height:80dvh;max-height:80dvh;display:flex;flex-direction:column;padding:0;overflow:hidden">
   <div class="sheet-handle" style="flex-shrink:0"></div>
   <div class="sheet-head" style="flex-shrink:0;padding:8px 20px 10px">
     <div>
@@ -1515,12 +1458,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
     </div>
     <button class="sheet-close" onclick="closeMealPicker()">✕</button>
   </div>
-  <div style="padding:0 16px 10px;flex-shrink:0;border-bottom:1px solid var(--border)">
-    <div style="position:relative">
+  <div style="padding:0 16px 8px;flex-shrink:0">
+    <div style="position:relative;margin-bottom:8px">
       <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="mp-search" type="text" placeholder="Search dishes…" oninput="renderMealPickerComp()"
         style="width:100%;padding:9px 12px 9px 32px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--bg);outline:none;box-sizing:border-box">
     </div>
+    <div id="mp-filter-chips" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;border-bottom:1px solid var(--border)"></div>
   </div>
   <div id="mp-list" style="flex:1;overflow-y:auto;padding-bottom:24px"></div>
 </div>
@@ -1529,50 +1473,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans'
 <div class="toast" id="toast"></div>
 
 <script>
-  // ═══════════════════════════════════════════════════════════════
-// SUPABASE CLOUD SYNC
-// ═══════════════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://nfkumviybvingfmjubsf.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_Er_BqJw29Gq0awMFhZrBqg_gMxiQjED';
-let _sb = null;
-function getSB() {
-  if (!_sb) _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  return _sb;
-}
-function _cloudKey() {
-  try { const u = JSON.parse(localStorage.getItem('melo_user')||'{}'); return u.phone||null; } catch(e) { return null; }
-}
-async function saveToCloud() {
-  const phone = _cloudKey(); if (!phone) return;
-  try {
-    await getSB().from('user_data').upsert({
-      phone,
-      pantry:      JSON.stringify(ingredients),
-      dishes:      JSON.stringify(dishes),
-      plan:        JSON.stringify(monthPlan),
-      settings:    JSON.stringify(planSettings),
-      categories:  JSON.stringify(categories),
-      dish_groups: JSON.stringify(dishGroups),
-      household:   JSON.stringify(household),
-      updated_at:  new Date().toISOString(),
-    }, {onConflict:'phone'});
-  } catch(e) { console.warn('Cloud save error:',e); }
-}
-async function loadFromCloud(phone) {
-  try {
-    const {data,error} = await getSB().from('user_data').select('*').eq('phone',phone).maybeSingle();
-    if (error||!data) return false;
-    const tryParse = (s,fb) => { try{const v=JSON.parse(s);return v||fb;}catch(e){return fb;} };
-    const p=tryParse(data.pantry,null);     if(Array.isArray(p)&&p.length) ingredients=p;
-    const d=tryParse(data.dishes,null);     if(Array.isArray(d)&&d.length) dishes=d;
-    const pl=tryParse(data.plan,null);      if(pl) monthPlan=pl;
-    const s=tryParse(data.settings,null);   if(s)  planSettings={..._defaultPlanSettings(),...s};
-    const c=tryParse(data.categories,null); if(Array.isArray(c)&&c.length) categories=c;
-    const g=tryParse(data.dish_groups,null);if(Array.isArray(g)&&g.length) dishGroups=g;
-    const h=tryParse(data.household,null);  if(h)  household=h;
-    return true;
-  } catch(e) { console.warn('Cloud load error:',e); return false; }
-}
 // ═══════════════════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════════════════
@@ -1621,41 +1521,10 @@ let ingredients = [];
 // Dishes — populated from user's profile state on load
 let dishes = [];
 
-
 // Komal V0 sample dataset — built from the new BASE_DISHES catalogue
 // Uses BASE_INGREDIENTS and BASE_DISHES (defined later in this file, hoisted as const)
 // We lazy-init this at first use rather than at parse time
 let _komalV0Cache = null;
-function getKomalV0() {
-  if (_komalV0Cache) return _komalV0Cache;
-  const convertedDishes = BASE_DISHES.map(d => {
-    const group = normalizeDishGroupId(d.dishGroup);
-    const mealType = d.mealType;
-    return {
-      id: d.id, emoji: d.icon, name: d.name,
-      ings: d.ingredients.map(ingId => ingId.replace(/^ing_/,'')),
-      group,
-      component: inferComponent({group, mealType}),
-      mealType,
-      freq: Math.max(4, d.defaultFrequency || 4),
-      days: [],
-      dishGroup: d.dishGroup,
-      calories: d.calories,
-      nutrition: d.nutrition,
-      isVeg: d.isVeg,
-    };
-  });
-  const convertedIngs = BASE_INGREDIENTS.map(ing => ({
-    id: ing.id.replace(/^ing_/,''),
-    emoji: ing.icon,
-    name: ing.name,
-    cat: {vegetable:'veg','protein-veg':'protein','protein-nonveg':'protein',grain:'grain',dairy:'dairy','ready-mix':'grain'}[ing.category] || 'veg',
-    status: 'in',
-    stockStatus: 'in-stock',
-  }));
-  _komalV0Cache = {ingredients: convertedIngs, dishes: convertedDishes};
-  return _komalV0Cache;
-}
 
 // Planner state
 let monthPlan = null; // 4 weeks x 7 days x {B,L,S,D}
@@ -1697,8 +1566,7 @@ const DAY_EMOJIS = {mon:'☀️',tue:'🌤',wed:'🌥',thu:'⛅',fri:'🌦',sat:
 
 // Dal & Roti source groups — configured in Planner Settings, populated from dishes
 // (No hardcoded options — all options come from the user's dish list)
-function getDalDishes()  { return dishes.filter(d => d.group === planSettings.dalGroup  && d.freq >= 0); }
-function getRotiDishes() { return dishes.filter(d => d.group === planSettings.rotiGroup && d.freq >= 0); }
+// (getDalDishes/getRotiDishes removed — addon preview no longer used)
 
 // ═══════════════════════════════════════════════════════════════
 // PROFILES & MULTI-USER STATE
@@ -1741,19 +1609,16 @@ function _saveProfileIndex() {
 function _profileKey(id) { return 'melo_state_' + id; }
 
 function saveState() {
-   if (!activeProfileId) return;
+  if (!activeProfileId) return;
   try {
     localStorage.setItem(_profileKey(activeProfileId), JSON.stringify({
       categories, dishGroups, ingredients, dishes,
       household, planSettings, monthPlan, currentWeek, shopWeek
     }));
   } catch(e) { console.warn('saveState error', e); }
-  // Also sync to Supabase cloud (fire and forget)
-  saveToCloud();
 }
 
 function saveStorage() { saveState(); }
-function loadStorage() { /* handled by _loadProfileState */ }
 
 // Reset in-memory state to app defaults (used when switching to an empty profile)
 function _resetInMemoryState() {
@@ -1976,24 +1841,6 @@ function _migrateLegacyToProfile() {
   return false;
 }
 
-function switchToProfile(id) {
-  if (!profiles.find(p => p.id === id)) return;
-  activeProfileId = id;
-  localStorage.setItem('melo_active_profile', id);
-  const existed = _loadProfileState(id);
-  _updateActiveAvatar();
-  renderPantry();
-  renderDishes();
-  const wl = document.getElementById('week-label');
-  if (wl) wl.textContent = `Week ${currentWeek + 1}`;
-  if (monthPlan) { renderPlanner(); renderShopping(); }
-  else { renderPlanner(); renderShopping(); } // render empties
-  updateProfileStats();
-  updateDBCard();
-  // If brand-new profile, show onboarding
-  if (dishes.length === 0) setTimeout(() => startOnboarding(), 200);
-}
-
 function _updateActiveAvatar() {
   const av = document.getElementById('active-avatar');
   if (!av) return;
@@ -2003,13 +1850,6 @@ function _updateActiveAvatar() {
 
 // ── Profile switcher UI ──
 // Profile switcher removed — single profile per user
-function openProfileSwitcher() { switchTab('profile'); }
-function closeProfileSwitcher() {}
-function openNewProfile() {}
-function closeNewProfile() {}
-function selectProfile(id) { closeProfileSwitcher(); }
-function deleteProfile(id) { toast('Use Reset Database on the Profile page to clear data'); }
-
 
 function init() {
   _loadProfileIndex();
@@ -2279,19 +2119,14 @@ function setIngStatus(s) {
 }
 
 function toggleIngIconPicker() {
-  const btn = document.getElementById('ing-gen-btn');
-  const isHidden = btn.style.display === 'none';
-  btn.style.display = isHidden ? 'inline-flex' : 'none';
-  if (isHidden) {
-    // also cycle the emoji as a visual hint
-    const icons = ['🥬','🥔','🧅','🥕','🍅','🥦','🌿','🥚','🍗','🦐','🧀','🥛','🌾','🫘','🍝','🫑','🌱','🍠','🎃','🫚'];
-    const cur = document.getElementById('ing-icon-display').textContent;
-    const idx = icons.indexOf(cur);
-    document.getElementById('ing-icon-display').textContent = icons[(idx + 1) % icons.length];
-  }
+  // Cycle through common ingredient emojis on tap
+  const icons = ['🥬','🥔','🧅','🥕','🍅','🥦','🌿','🥚','🍗','🦐','🧀','🥛','🌾','🫘','🍝','🫑','🌱','🍠','🎃','🫚'];
+  const display = document.getElementById('ing-icon-display');
+  if (!display) return;
+  const cur = display.textContent;
+  const idx = icons.indexOf(cur);
+  display.textContent = icons[(idx + 1) % icons.length];
 }
-
-function cycleIngIcon() { toggleIngIconPicker(); }
 
 // ── AI EMOJI GENERATION ──────────────────────────────────────
 let ingGenTimer = null, dishGenTimer = null;
@@ -2317,15 +2152,13 @@ async function generateIngIcon(auto = false) {
   const name = document.getElementById('ing-name-input').value.trim();
   if (!name) return toast('Type a name first');
   const display = document.getElementById('ing-icon-display');
-  const btn = document.getElementById('ing-gen-btn');
   const emoji = await fetchEmojiForName(name, 'ingredient');
-  display.textContent = emoji;
+  if (display) display.textContent = emoji;
   if (editingIngId) {
     const ing = ingredients.find(i => i.id === editingIngId);
     if (ing) { ing.emoji = emoji; saveStorage(); renderPantry(); }
   }
   if (!auto) toast(`Emoji set to ${emoji}`);
-  if (btn) { btn.classList.remove('loading'); btn.textContent = '✨ Generate emoji from name'; }
 }
 
 async function generateDishIcon(auto = false) {
@@ -2745,21 +2578,6 @@ function cycleStock(id) {
 }
 
 // Legacy popup — still used from the ingredient detail sheet's status tabs
-function openStockPopup(id) {
-  stockPopupIngId = id;
-  const ing = ingredients.find(i => i.id === id);
-  if (!ing) return;
-  document.getElementById('stock-popup-name').textContent = ing.name;
-  ['in','low','out'].forEach(s => document.getElementById('sp-'+s).classList.toggle('active', ing.status===s));
-  openSheet('stock');
-}
-function setStockFromPopup(s) {
-  if (!stockPopupIngId) return;
-  const ing = ingredients.find(i => i.id === stockPopupIngId);
-  if (ing) { ing.status = s; updateStockDot(stockPopupIngId, s); saveStorage(); }
-  closeStockPopup(); toast('Status updated');
-}
-function closeStockPopup() { closeSheet('stock'); }
 
 function updateStockDot(id, status) {
   const LABELS = {in:'In Stock', low:'Running Low', out:'Out of Stock'};
@@ -2857,20 +2675,15 @@ function renderDishes() {
       tileHtml += `<div class="dish-grid-section-hdr"><span>${emoji} ${name.toUpperCase()}</span><span style="font-size:12px">${groups[k].length}</span></div>`;
       groups[k].forEach(d => {
         const grpBadge = dishGroups.find(g => g.id === d.group);
-        // Only show meal type badges when grouped by dish group (not meal type — headers already show that)
-        const tileMtBadges = dishFilterMode === 'group'
-          ? (Array.isArray(d.mealType) ? d.mealType : [d.mealType]).map(mt =>
-              `<span class="mt-badge ${mt}">${mealTypes.find(m=>m.id===mt)?.name||mt}</span>`
-            ).join('')
-          : '';
+        // Combined meta line: group · freq
+        const metaLine = [
+          grpBadge ? `${grpBadge.emoji} ${grpBadge.name}` : '',
+          `${d.freq}×/mo`
+        ].filter(Boolean).join(' · ');
         tileHtml += `<div class="dish-tile" onclick="openDishSheet('${d.id}')">
           <div class="dish-tile-bubble">${d.emoji}</div>
           <div class="dish-tile-name">${d.name}</div>
-          <div class="dish-tile-meta">
-            ${grpBadge ? `<span class="dish-tile-badge">${grpBadge.name}</span>` : ''}
-          </div>
-          ${tileMtBadges ? `<div style="margin-top:2px;line-height:1.8">${tileMtBadges}</div>` : ''}
-          <div class="dish-tile-freq">${d.freq}×/mo</div>
+          <div class="dish-tile-meta-line">${metaLine}</div>
         </div>`;
       });
     });
@@ -2889,19 +2702,17 @@ function renderDishes() {
       groups[k].forEach(d => {
         const ingNames = d.ings.map(i => ingredients.find(x=>x.id===i)?.name||i).join(', ');
         const grpBadge = dishGroups.find(g=>g.id===d.group);
-        const mtBadges = (Array.isArray(d.mealType) ? d.mealType : [d.mealType]).map(mt =>
-          `<span class="mt-badge ${mt}">${mealTypes.find(m=>m.id===mt)?.emoji||''} ${mealTypes.find(m=>m.id===mt)?.name||mt}</span>`
-        ).join('');
+        // Single combined meta: group · freq
+        const metaLine = [
+          grpBadge ? `${grpBadge.emoji} ${grpBadge.name}` : '',
+          `${d.freq}×/mo`
+        ].filter(Boolean).join(' · ');
         listHtml += `<div class="dish-card" onclick="openDishSheet('${d.id}')">
           <div class="dc-icon">${d.emoji}</div>
           <div class="dc-info">
             <div class="dc-name">${d.name}</div>
             <div class="dc-ings">${ingNames||'—'}</div>
-            <div class="dc-meta">
-              ${grpBadge ? `<span class="badge badge-group">${grpBadge.emoji} ${grpBadge.name}</span>` : ''}
-              <span class="badge-freq">${d.freq}×/mo</span>
-            </div>
-            <div style="margin-top:4px;line-height:1.8">${mtBadges}</div>
+            <div class="dc-meta-line">${metaLine}</div>
           </div>
           <svg class="dc-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </div>`;
@@ -3088,7 +2899,7 @@ function renderDishMealTypeTags(activeIds) {
   const active = Array.isArray(activeIds) ? activeIds : (activeIds ? [activeIds] : []);
   const visibleTypes = mealTypes.filter(mt => mt.id !== 'starter');
   document.getElementById('dish-mealtype-tags').innerHTML = visibleTypes.map(mt =>
-    `<div class="tag-btn ${active.includes(mt.id)?'active':''}" onclick="toggleDishMealType('${mt.id}')" id="dmt-${mt.id}">${mt.emoji} ${mt.name}</div>`
+    `<div class="tag-btn multi ${active.includes(mt.id)?'active':''}" onclick="toggleDishMealType('${mt.id}')" id="dmt-${mt.id}">${mt.emoji} ${mt.name}</div>`
   ).join('');
 }
 
@@ -3137,7 +2948,7 @@ function renderDishComponentTags(mealTypes, activeComps) {
   cont.innerHTML = eligible.map(c => {
     const cfg = getComponentConfig(c.id);
     const on = activeCfg.has(c.id);
-    return `<div class="tag-btn ${on ? 'active' : ''}" id="dct-${c.id}" onclick="toggleDishComponent('${c.id}')">${c.emoji} ${cfg.name}</div>`;
+    return `<div class="tag-btn multi ${on ? 'active' : ''}" id="dct-${c.id}" onclick="toggleDishComponent('${c.id}')">${c.emoji} ${cfg.name}</div>`;
   }).join('');
 }
 
@@ -3156,16 +2967,11 @@ function toggleDishComponent(id) {
   el.classList.toggle('active');
 }
 // Legacy alias kept in case any code still calls the single-select version
-function selectDishMealType(id) {
-  document.querySelectorAll('#dish-mealtype-tags .tag-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('dmt-'+id)?.classList.add('active');
-}
 
 function adjFreq(d) {
   currentDishFreq = Math.max(1, Math.min(31, currentDishFreq + d));
   document.getElementById('freq-val').textContent = currentDishFreq;
 }
-
 
 function cycleDishIcon() {
   const icons = ['🍽','🫓','🥘','🥗','🍳','🍚','🥙','🍲','🥣','🫔','🍝','🍛','🥞','🧆','🫕'];
@@ -3310,37 +3116,9 @@ function deleteGroup(id) {
   saveStorage(); renderGroupManager(); renderDishes();
 }
 
-
-
 // ═══════════════════════════════════════════════════════════════
 // MEAL TYPE MANAGER
 // ═══════════════════════════════════════════════════════════════
-function openMealTypeManager() { renderMealTypeManager(); openSheet('mt'); }
-function closeMealTypeManager() { closeSheet('mt'); }
-function renderMealTypeManager() {
-  document.getElementById('mt-manager-list').innerHTML = mealTypes.map(mt => `
-    <div class="manager-item">
-      <span class="mi-icon">${mt.emoji}</span>
-      <span class="mi-name">${mt.name}</span>
-      <span class="mi-count">${dishes.filter(d=>_hasMealType(d,mt.id)).length}</span>
-      ${mt.locked ? '<span class="mi-locked">built-in</span>' : `<button class="mi-del" onclick="deleteMealType('${mt.id}')">🗑</button>`}
-    </div>`).join('');
-}
-function addMealType() {
-  const name = document.getElementById('new-mt-name').value.trim();
-  if (!name) return;
-  if (mealTypes.find(mt => mt.name.toLowerCase() === name.toLowerCase())) return toast('Meal type exists');
-  const emoji = document.getElementById('new-mt-emoji').textContent;
-  mealTypes.push({id:'mt_'+Date.now(), emoji, name, locked:false});
-  document.getElementById('new-mt-name').value = '';
-  saveStorage(); renderMealTypeManager(); renderDishes(); toast('Meal type added');
-}
-function deleteMealType(id) {
-  const cnt = dishes.filter(d=>_hasMealType(d,id)).length;
-  if (cnt > 0) return toast(`${cnt} dish(es) use this type`);
-  mealTypes = mealTypes.filter(mt => mt.id !== id);
-  saveStorage(); renderMealTypeManager(); renderDishes();
-}
 
 // ═══════════════════════════════════════════════════════════════
 // EMOJI CYCLER (for manager add rows)
@@ -3593,6 +3371,89 @@ function pickDish(pool) {
   return pool[pool.length - 1];
 }
 
+let plannerView = 'day'; // 'day' | 'comp'
+
+function _syncPlannerViewButtons() {
+  document.getElementById('pv-day-btn') ?.classList.toggle('active', plannerView === 'day');
+  document.getElementById('pv-comp-btn')?.classList.toggle('active', plannerView === 'comp');
+}
+
+function setPlannerView(v) {
+  plannerView = v;
+  renderPlanner(); // called from button tap only
+}
+
+// ── Component (By Meal) view ─────────────────────────────────────────────────
+function renderPlannerCompView(content) {
+  if (!monthPlan) return;
+  const week = monthPlan[currentWeek];
+  const DAY_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const FULL_DAY  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+  let html = '';
+
+  // For each enabled component, show a section with all 7 days as columns
+  const enabledComponents = MEAL_COMPONENTS.filter(c => getComponentConfig(c.id)?.enabled);
+
+  // Group components by meal type key for section headers
+  const mealSections = {};
+  enabledComponents.forEach(c => {
+    const key = Array.isArray(c.mealType) ? c.mealType.join(',') : c.mealType;
+    if (!mealSections[key]) mealSections[key] = [];
+    mealSections[key].push(c);
+  });
+
+  const sectionLabels = {
+    'breakfast':     '☀️ Breakfast',
+    'lunch,dinner':  '🍽️ Lunch & Dinner',
+    'snack':         '🥜 Snack',
+  };
+
+  Object.entries(mealSections).forEach(([key, comps]) => {
+    html += `<div class="cv-section-hdr">${sectionLabels[key] || key}</div>`;
+
+    comps.forEach(c => {
+      const cfg = getComponentConfig(c.id);
+      html += `<div class="cv-comp-block">
+        <div class="cv-comp-label">${c.emoji} ${cfg.name}</div>
+        <div class="cv-days-row">`;
+
+      week.forEach((dayPlan, di) => {
+        const entry = dayPlan.skipped ? null : dayPlan.components?.[c.id];
+        const d = entry ? dishes.find(x => x.id === entry.dishId) : null;
+
+        if (dayPlan.skipped) {
+          html += `<div class="cv-day-cell cv-skipped">
+            <div class="cv-day-label">${DAY_SHORT[di]}</div>
+            <div class="cv-cell-body"><div class="cv-day-emoji">–</div></div>
+          </div>`;
+        } else if (d) {
+          html += `<div class="cv-day-cell cv-filled" onclick="openMealPickerComp(${currentWeek},${di},'${c.id}')">
+            <div class="cv-day-label">${DAY_SHORT[di]}</div>
+            <div class="cv-cell-body">
+              <div class="cv-day-emoji">${d.emoji}</div>
+              <div class="cv-day-name">${d.name}</div>
+            </div>
+            <button class="cv-shuffle" onclick="event.stopPropagation();shuffleComp(${currentWeek},${di},'${c.id}')">↻</button>
+          </div>`;
+        } else {
+          html += `<div class="cv-day-cell cv-empty" onclick="openMealPickerComp(${currentWeek},${di},'${c.id}')">
+            <div class="cv-day-label">${DAY_SHORT[di]}</div>
+            <div class="cv-cell-body">
+              <div class="cv-day-emoji">＋</div>
+              <div class="cv-day-name">Add</div>
+            </div>
+          </div>`;
+        }
+      });
+
+      html += `</div></div>`;
+    });
+  });
+
+  content.innerHTML = html;
+}
+
 function renderPlanner() {
   const content = document.getElementById('planner-content');
   if (!monthPlan) {
@@ -3601,6 +3462,9 @@ function renderPlanner() {
       : '<div class="empty-state"><div class="es-icon">📅</div><h3>No plan yet</h3><p>Tap <strong>Generate Month Plan</strong> above to build your monthly schedule.</p></div>';
     return;
   }
+  // Sync view toggle button state without recursion
+  _syncPlannerViewButtons();
+  if (plannerView === 'comp') { renderPlannerCompView(content); return; }
   updateDaysActiveLabel();
   const week = monthPlan[currentWeek];
   const dayTypeLabel = {mon:'Weekday',tue:'Weekday',wed:'Weekday',thu:'Weekday',fri:'Weekday',sat:'Weekend',sun:'Weekend'};
@@ -3668,7 +3532,7 @@ function renderPlanner() {
       <div class="day-hdr">
         <div class="day-hdr-left">
           <span class="day-name">${FULL_DAY[di]}</span>
-          <span class="day-type-badge">${dayTypeLabel[dayPlan.day]}</span>
+          
           ${isLocked ? '<span class="day-locked-badge">🔒 Locked</span>' : ''}
         </div>
         <div class="day-hdr-right" style="display:flex;align-items:center;gap:6px">
@@ -3733,74 +3597,7 @@ function toggleDayLock(week, dayIdx) {
   toast(dayPlan.locked ? `🔒 ${dayName} locked — won't change on regenerate` : `🔓 ${dayName} unlocked`);
 }
 
-function toggleAddon(week, dayIdx, type) {
-  if (!monthPlan) return;
-  const dayPlan = monthPlan[week][dayIdx];
-  if (dayPlan.skipped) return;
-  if (dayPlan[type] !== null && dayPlan[type] !== undefined) {
-    dayPlan[type] = null;
-  } else {
-    // default to first dish in linked group
-    const opts = type === 'dal' ? getDalDishes() : getRotiDishes();
-    dayPlan[type] = opts.length > 0 ? opts[0].id : '';
-  }
-  autosavePlan();
-  renderPlanner();
-}
 
-function setAddon(week, dayIdx, type, value) {
-  if (!monthPlan) return;
-  monthPlan[week][dayIdx][type] = value;
-  autosavePlan();
-  renderPlanner();
-  const d = dishes.find(x => x.id === value);
-  toast(`${type === 'dal' ? 'Dal' : 'Roti'}: ${d ? d.name : value}`);
-}
-
-function renderDalRotiConfig() {
-  const dalSel  = document.getElementById('dal-group-select');
-  const rotiSel = document.getElementById('roti-group-select');
-  if (!dalSel || !rotiSel) return;
-
-  const noGroupOpt = '<option value="">— No group linked —</option>';
-  dalSel.innerHTML = noGroupOpt +
-    dishGroups.map(g => '<option value="' + g.id + '"' + (planSettings.dalGroup === g.id ? ' selected' : '') + '>' + g.emoji + ' ' + g.name + '</option>').join('');
-  rotiSel.innerHTML = noGroupOpt +
-    dishGroups.map(g => '<option value="' + g.id + '"' + (planSettings.rotiGroup === g.id ? ' selected' : '') + '>' + g.emoji + ' ' + g.name + '</option>').join('');
-
-  updateAddonPreview();
-}
-
-function updateAddonGroup(type, groupId) {
-  if (type === 'dal')  planSettings.dalGroup  = groupId;
-  if (type === 'roti') planSettings.rotiGroup = groupId;
-  saveState();
-  updateAddonPreview();
-  renderPlanner(); // refresh dropdowns on day cards
-}
-
-function updateAddonPreview() {
-  const dalPrev  = document.getElementById('dal-preview');
-  const rotiPrev = document.getElementById('roti-preview');
-
-  const renderPills = (el, dishList) => {
-    if (!el) return;
-    if (!planSettings.dalGroup && el === dalPrev) { el.innerHTML = ''; return; }
-    if (!planSettings.rotiGroup && el === rotiPrev) { el.innerHTML = ''; return; }
-    if (dishList.length === 0) {
-      el.innerHTML = '<span style="color:var(--amber);font-style:italic;font-size:12px">No dishes in this group — add some in the Dishes tab</span>';
-    } else {
-      el.innerHTML = '<span style="font-size:11px;color:var(--text3)">Will show: </span>' +
-        dishList.map(d =>
-          '<span style="display:inline-flex;align-items:center;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:500;color:var(--text2);margin:2px 2px 0 0">' +
-          d.emoji + ' ' + d.name + '</span>'
-        ).join('');
-    }
-  };
-
-  renderPills(dalPrev,  getDalDishes());
-  renderPills(rotiPrev, getRotiDishes());
-}
 
 function updateDaysActiveLabel() {
   if (!monthPlan) return;
@@ -3847,8 +3644,11 @@ function shuffleComp(week, dayIdx, compId) {
   renderPlanner();
 }
 
+let mpGroupFilter = 'all'; // active dish group filter in meal picker
+
 function openMealPickerComp(week, dayIdx, compId) {
   mpWeek = week; mpDayIdx = dayIdx; mpSlot = compId;
+  mpGroupFilter = 'all';
   const cfg = getComponentConfig(compId);
   const FULL_DAY = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   document.getElementById('mp-title').textContent = `Choose ${cfg?.name || compId}`;
@@ -3858,30 +3658,53 @@ function openMealPickerComp(week, dayIdx, compId) {
   openSheet('mp');
 }
 
+function setMpGroupFilter(g) {
+  mpGroupFilter = g;
+  renderMealPickerComp();
+}
+
 function renderMealPickerComp() {
   const cfg = getComponentConfig(mpSlot);
   if (!cfg) return;
-  const search = document.getElementById('mp-search').value.toLowerCase();
-  const day = DAYS[mpDayIdx];
-  const dayPlan = monthPlan[mpWeek][mpDayIdx];
-  const currentDishId = dayPlan.components?.[mpSlot]?.dishId;
+  const search = document.getElementById('mp-search')?.value.toLowerCase() || '';
+  const dayPlan = monthPlan?.[mpWeek]?.[mpDayIdx];
+  const currentDishId = dayPlan?.components?.[mpSlot]?.dishId;
 
+  // Build full pool for this component
   let pool = dishes.filter(d => {
     if (!d.freq || d.freq < 1) return false;
     const dComps = Array.isArray(d.component) ? d.component : (d.component ? [d.component] : []);
     if (!dComps.includes(mpSlot)) return false;
-    if (search) {
-      const ingMatch = d.ings.some(iId => ingredients.find(x=>x.id===iId)?.name.toLowerCase().includes(search));
-      if (!d.name.toLowerCase().includes(search) && !ingMatch) return false;
-    }
     return true;
   });
-  // Fallback: show all dishes for same mealType if no component match
+  // Fallback if empty
   if (pool.length === 0) {
-    const cfg = getComponentConfig(mpSlot);
     const compMts = cfg ? (Array.isArray(cfg.mealType) ? cfg.mealType : [cfg.mealType]) : [];
-    pool = dishes.filter(d => compMts.some(mt => _hasMealType(d, mt)) &&
-      (search ? d.name.toLowerCase().includes(search) : true));
+    pool = dishes.filter(d => compMts.some(mt => _hasMealType(d, mt)));
+  }
+
+  // Build group chips from the pool
+  const usedGroups = [...new Set(pool.map(d => d.group).filter(Boolean))];
+  const chipsEl = document.getElementById('mp-filter-chips');
+  if (chipsEl) {
+    chipsEl.innerHTML = usedGroups.length > 1
+      ? [`<div class="chip ${mpGroupFilter==='all'?'active':''}" onclick="setMpGroupFilter('all')" style="white-space:nowrap;flex-shrink:0">All</div>`,
+         ...usedGroups.map(gid => {
+           const g = dishGroups.find(x => x.id === gid);
+           if (!g) return '';
+           return `<div class="chip ${mpGroupFilter===gid?'active':''}" onclick="setMpGroupFilter('${gid}')" style="white-space:nowrap;flex-shrink:0">${g.emoji} ${g.name}</div>`;
+         })
+        ].join('')
+      : '';
+  }
+
+  // Apply filters
+  if (mpGroupFilter !== 'all') pool = pool.filter(d => d.group === mpGroupFilter);
+  if (search) {
+    pool = pool.filter(d => {
+      const ingMatch = d.ings.some(iId => ingredients.find(x=>x.id===iId)?.name.toLowerCase().includes(search));
+      return d.name.toLowerCase().includes(search) || ingMatch;
+    });
   }
 
   const html = pool.length === 0
@@ -3913,87 +3736,8 @@ function selectDishForComp(dishId) {
   renderPlanner();
 }
 
-function openMealPicker(week, dayIdx, slot) {
-  mpWeek = week; mpDayIdx = dayIdx; mpSlot = slot;
-  const slotNames = {B:'Breakfast', L:'Lunch', S:'Snack', D:'Dinner'};
-  const FULL_DAY = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-  document.getElementById('mp-title').textContent = `Choose ${slotNames[slot]}`;
-  document.getElementById('mp-subtitle').textContent = `${FULL_DAY[dayIdx]}, Week ${week + 1}`;
-  document.getElementById('mp-search').value = '';
-  renderMealPicker();
-  openSheet('mp');
-}
-
 function closeMealPicker() { closeSheet('mp'); }
 
-function renderMealPicker() {
-  const search = document.getElementById('mp-search').value.toLowerCase();
-  const slotMealType = {B:'breakfast', L:'lunch', S:'snack', D:'dinner'};
-  const mealTypeFilter = slotMealType[mpSlot];
-  const day = DAYS[mpDayIdx];
-
-  // Current selection
-  const dayPlan = monthPlan[mpWeek][mpDayIdx];
-  const currentDishId = dayPlan[mpSlot]?.dishId;
-
-  // Filter dishes to relevant meal type; also allow any if searching
-  let pool = dishes.filter(d => {
-    if (d.freq === 0) return false;
-    // day restriction
-    if (d.days && d.days.length > 0 && !d.days.includes(day)) return false;
-    // meal type: for B → breakfast, for L/D → lunch or dinner, for S → snacks (handles array)
-    if (mpSlot === 'B' && !_hasMealType(d, 'breakfast')) return false;
-    if ((mpSlot === 'L' || mpSlot === 'D') && !_hasMealType(d, 'lunch') && !_hasMealType(d, 'dinner')) return false;
-    if (mpSlot === 'S' && !_hasMealType(d, 'snack')) return false;
-    // search
-    if (search) {
-      const ingMatch = d.ings.some(iId => ingredients.find(x => x.id === iId)?.name.toLowerCase().includes(search));
-      if (!d.name.toLowerCase().includes(search) && !ingMatch) return false;
-    }
-    return true;
-  });
-
-  // If search is active and too few results, widen to all meal types
-  if (search && pool.length < 3) {
-    pool = dishes.filter(d => {
-      if (d.freq === 0) return false;
-      if (d.days.length > 0 && !d.days.includes(day)) return false;
-      const ingMatch = d.ings.some(iId => ingredients.find(x => x.id === iId)?.name.toLowerCase().includes(search));
-      return d.name.toLowerCase().includes(search) || ingMatch;
-    });
-  }
-
-  // Group by dish group
-  const grouped = {};
-  pool.forEach(d => {
-    const g = d.group || 'other';
-    if (!grouped[g]) grouped[g] = [];
-    grouped[g].push(d);
-  });
-
-  let html = '';
-  if (pool.length === 0) {
-    html = '<div class="empty-state"><div class="es-icon">🔍</div><h3>No dishes found</h3><p>Try a different search</p></div>';
-  } else {
-    Object.keys(grouped).forEach(gKey => {
-      const grp = dishGroups.find(g => g.id === gKey);
-      if (grp) html += `<div class="mp-group-hdr">${grp.emoji} ${grp.name}</div>`;
-      grouped[gKey].forEach(d => {
-        const ingNames = d.ings.map(i => ingredients.find(x => x.id === i)?.name || i).slice(0, 3).join(', ');
-        const isCurrent = d.id === currentDishId;
-        html += `<div class="mp-row${isCurrent ? ' selected' : ''}" onclick="selectMealFromPicker('${d.id}')">
-          <div class="mp-bubble">${d.emoji}</div>
-          <div class="mp-info">
-            <div class="mp-name">${d.name}</div>
-            <div class="mp-meta">${ingNames} · ${d.freq}×/mo</div>
-          </div>
-          ${isCurrent ? '<div class="mp-check"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>' : ''}
-        </div>`;
-      });
-    });
-  }
-  document.getElementById('mp-list').innerHTML = html;
-}
 
 function selectMealFromPicker(dishId) {
   if (!monthPlan) return;
@@ -4010,47 +3754,14 @@ function selectMealFromPicker(dishId) {
   toast(d ? `Changed to ${d.name}` : 'Meal updated');
 }
 
-function shuffleSlot(week, day, slot) {
-  if (!monthPlan) return;
-  const dayPlan = monthPlan[week][day];
-  const current = dayPlan[slot];
-  if (!current) return;
-  const currentDish = dishes.find(d => d.id === current.dishId);
-  if (!currentDish) return;
-
-  const group = currentDish.group;
-  const mealType = currentDish.mealType;
-  const dayKey = DAYS[day];
-
-  let alt = dishes.filter(d =>
-    d.id !== current.dishId &&
-    d.group === group &&
-    (d.days.length === 0 || d.days.includes(dayKey)) &&
-    d.freq > 0
-  );
-  if (alt.length === 0) { toast('No alternatives available'); return; }
-
-  const pick = alt[Math.floor(Math.random() * alt.length)];
-  dayPlan[slot] = {dishId: pick.id};
-  if (slot === 'L' && planSettings.sameLd) dayPlan['D'] = {dishId: pick.id};
-  if (slot === 'D' && planSettings.sameLd) dayPlan['L'] = {dishId: pick.id};
-
-  autosavePlan();
-  renderPlanner();
-  toast(`Shuffled to ${pick.name}`);
-}
-
 function autosavePlan() {
   if (!monthPlan) return;
   saveState();
   planUnsaved = false;
   const sb = document.getElementById('save-bar');
   if (sb) sb.style.display = 'none';
-}
-
-function savePlan() {
-  autosavePlan();
-  toast('Plan saved ✓');
+  // Keep shopping list in sync — re-render whenever plan changes
+  renderShopping();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -4059,7 +3770,6 @@ function savePlan() {
 function openPlannerSettings() {
   const sameLdEl = document.getElementById('tog-same-ld');
   if (sameLdEl) sameLdEl.classList.toggle('on', planSettings.sameLd);
-  renderComponentsList();
   renderDayRulesList();
   openSheet('ps');
 }
@@ -4069,52 +3779,6 @@ function toggleSetting(key) {
   planSettings[key] = !planSettings[key];
   if (key === 'sameLd') document.getElementById('tog-same-ld')?.classList.toggle('on', planSettings[key]);
   saveState();
-}
-
-function renderComponentsList() {
-  const cont = document.getElementById('components-list');
-  if (!cont) return;
-  const mealLabels = {'breakfast':'☀️ Breakfast','lunch,dinner':'🍽️ Lunch & Dinner','snack':'🥜 Snack'};
-  let lastKey = null;
-  let html = '';
-  MEAL_COMPONENTS.forEach(c => {
-    const cfg = getComponentConfig(c.id);
-    const mtKey = Array.isArray(c.mealType) ? c.mealType.join(',') : c.mealType;
-    if (mtKey !== lastKey) {
-      html += `<div class="comp-meal-hdr">${mealLabels[mtKey] || mtKey}</div>`;
-      lastKey = mtKey;
-    }
-    html += `<div class="comp-cfg-row ${cfg.enabled ? '' : 'disabled'}">
-      <div class="comp-cfg-emoji" style="opacity:${cfg.enabled ? '1' : '.4'}">${c.emoji}</div>
-      <div class="comp-cfg-info">
-        <input class="comp-cfg-name-input" value="${cfg.name}"
-          onchange="updateCompName('${c.id}',this.value)"
-          onclick="event.stopPropagation()"
-          style="opacity:${cfg.enabled ? '1' : '.5'}">
-      </div>
-      <div class="toggle ${cfg.enabled ? 'on' : ''}" onclick="toggleComp('${c.id}')"></div>
-    </div>`;
-  });
-  cont.innerHTML = html;
-}
-
-function updateCompName(id, name) {
-  if (!planSettings.components) planSettings.components = {};
-  if (!planSettings.components[id]) planSettings.components[id] = {};
-  planSettings.components[id].name = name.trim() || getComponentConfig(id).defaultName;
-  saveState();
-}
-
-// updateCompGroup removed — dish groups per component are hardcoded in MEAL_COMPONENTS.allowedGroups
-
-function toggleComp(id) {
-  if (!planSettings.components) planSettings.components = {};
-  if (!planSettings.components[id]) planSettings.components[id] = {};
-  planSettings.components[id].enabled = !getComponentConfig(id).enabled;
-  saveState();
-  // Refresh whichever panel is visible
-  renderCompTab();
-  renderComponentsList();
 }
 
 function renderDayRulesList() {
@@ -4152,28 +3816,6 @@ function renderDayRulesList() {
       </div>
     </div>`;
   }).join('');
-}
-
-function _drGroupOpts(slot, selected) {
-  const isBk = slot === 'bk';
-  const allGroups = isBk
-    ? dishGroups.filter(g => ['paratha','south-indian','flatbread','egg','light-bfast','khichdi'].includes(g.id) || !g.locked)
-    : dishGroups.filter(g => !['paratha','south-indian','light-bfast'].includes(g.id) || !g.locked);
-  const anyLabel = isBk ? 'Any breakfast' : 'Any dish';
-  return `<option value="">` + anyLabel + `</option>` +
-    allGroups.map(g => `<option value="${g.id}" ${selected === g.id ? 'selected' : ''}>${g.emoji} ${g.name}</option>`).join('');
-}
-
-function toggleDayRule(day) {
-  const body = document.getElementById('drb-' + day);
-  if (body) body.classList.toggle('open');
-}
-
-function updateDayRule(day, slot, val) {
-  if (!planSettings.dayRules[day]) planSettings.dayRules[day] = {bk:'', ld:''};
-  planSettings.dayRules[day][slot] = val;
-  saveStorage();
-  renderDayRulesList();
 }
 
 function removeDayRule(day) {
@@ -4356,35 +3998,45 @@ function applyAndRegenerate() {
 // ═══════════════════════════════════════════════════════════════
 // WHATSAPP SHARE
 // ═══════════════════════════════════════════════════════════════
+function _dayCompEntries(dayPlan) {
+  // Returns [{label, entry}] for all filled components in a day
+  const result = [];
+  const compLabels = {
+    'bk-main':'☀️ Breakfast', 'lu-sabji':'🥬 Sabji', 'lu-dal':'🫘 Dal',
+    'lu-rice':'🍚 Rice', 'lu-roti':'🫓 Roti', 'lu-salad':'🥗 Salad',
+    'sn-main':'🥜 Snack'
+  };
+  const comps = dayPlan.components || {};
+  const dinnerComps = dayPlan.dinnerComponents;
+  MEAL_COMPONENTS.forEach(c => {
+    const entry = comps[c.id];
+    if (!entry) return;
+    const label = compLabels[c.id] || c.id;
+    result.push({label, entry});
+    // Separate dinner line if sameLd is off
+    if (dinnerComps && dinnerComps[c.id] && dinnerComps[c.id].dishId !== entry.dishId) {
+      const dinnerLabel = label.replace('🥬','🌙').replace('🫘','🌙').replace('🍚','🌙').replace('🫓','🌙').replace('🥗','🌙');
+      result.push({label: dinnerLabel + ' (dinner)', entry: dinnerComps[c.id]});
+    }
+  });
+  return result;
+}
+
 function shareDayWhatsApp(week, dayIdx) {
   if (!monthPlan) return;
   const dayPlan = monthPlan[week][dayIdx];
   const FULL_DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-  const slots = {B:'☀️ Breakfast',L:'🌤 Lunch',S:'🥜 Snack',D:'🌙 Dinner'};
   let msg = `🍽 *${FULL_DAYS[dayIdx]}'s Menu (Week ${week+1})*\n\n`;
   const ingSet = new Set();
-  ['B','L','S','D'].forEach(s => {
-    const entry = dayPlan[s];
-    if (!entry) return;
+  _dayCompEntries(dayPlan).forEach(({label, entry}) => {
     const d = dishes.find(x => x.id === entry.dishId);
     if (!d) return;
-    const isLdSame = s === 'D' && planSettings.sameLd && dayPlan.L && dayPlan.D && dayPlan.L.dishId === dayPlan.D.dishId;
-    msg += `${slots[s]}: ${d.name}${isLdSame ? ' (same as lunch)' : ''}\n`;
-    if (!isLdSame) d.ings.forEach(i => { const ing = ingredients.find(x=>x.id===i); if(ing) ingSet.add(ing.name); });
+    msg += `${label}: ${d.name}\n`;
+    d.ings.forEach(i => { const ing = ingredients.find(x=>x.id===i); if(ing) ingSet.add(ing.name); });
   });
-  // Add dal & roti
-  if (dayPlan.dal) {
-    const dalDish = dishes.find(d => d.id === dayPlan.dal);
-    if (dalDish) { msg += `🫘 Dal: ${dalDish.name}\n`; ingSet.add(dalDish.name); }
-  }
-  if (dayPlan.roti) {
-    const rotiDish = dishes.find(d => d.id === dayPlan.roti);
-    if (rotiDish) { msg += `🫓 Roti: ${rotiDish.name}\n`; ingSet.add(rotiDish.name); }
-  }
   if (ingSet.size > 0) msg += `\n🛒 *Ingredients:* ${[...ingSet].join(', ')}`;
   msg += '\n\n_Sent from Melo_ 🌿';
-  const url = 'https://wa.me/?text=' + encodeURIComponent(msg);
-  window.open(url, '_blank');
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 }
 
 function shareWeekWhatsApp() {
@@ -4392,33 +4044,21 @@ function shareWeekWhatsApp() {
   const week = monthPlan[shopWeek];
   const FULL_DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   let msg = `🗓 *Week ${shopWeek + 1} Meal Plan*\n\n`;
+  const ingMap = {};
   week.forEach((dayPlan, di) => {
     if (dayPlan.skipped) { msg += `*${FULL_DAYS[di]}* — Away ✈️\n\n`; return; }
     msg += `*${FULL_DAYS[di]}*\n`;
-    ['B','L','S','D'].forEach(s => {
-      const entry = dayPlan[s];
-      if (!entry) return;
+    _dayCompEntries(dayPlan).forEach(({label, entry}) => {
       const d = dishes.find(x => x.id === entry.dishId);
       if (!d) return;
-      msg += `  ${s}: ${d.name}\n`;
+      msg += `  ${label}: ${d.name}\n`;
+      d.ings.forEach(iId => { ingMap[iId] = true; });
     });
     msg += '\n';
   });
-  // Append shopping list
-  const ingMap = {};
-  week.forEach(dayPlan => {
-    if (dayPlan.skipped) return;
-    ['B','L','S','D'].forEach(s => {
-      const entry = dayPlan[s];
-      if (!entry) return;
-      const d = dishes.find(x => x.id === entry.dishId);
-      if (!d) return;
-      d.ings.forEach(iId => { ingMap[iId] = true; });
-    });
-  });
   const toBuy = Object.keys(ingMap)
     .map(iId => ingredients.find(x => x.id === iId))
-    .filter(ing => ing && (ing.status === 'out' || ing.status === 'low'));
+    .filter(ing => ing && ing.status !== 'in');
   if (toBuy.length > 0) {
     msg += `🛒 *Shopping List*\n${toBuy.map(i => `  • ${i.name}`).join('\n')}\n\n`;
   }
@@ -4449,17 +4089,16 @@ function renderShopping() {
     const ingMap = {};
     weekPlan.forEach(dayPlan => {
       if (dayPlan.skipped) return;
-      ['B','L','S','D'].forEach(s => {
-        const entry = dayPlan[s];
+      const allComps = {...(dayPlan.components||{}), ...(dayPlan.dinnerComponents||{})};
+      Object.values(allComps).forEach(entry => {
         if (!entry) return;
         const d = dishes.find(x => x.id === entry.dishId);
-        if (!d) return;
-        d.ings.forEach(iId => { ingMap[iId] = true; });
+        if (d) d.ings.forEach(iId => { ingMap[iId] = true; });
       });
     });
     const buyCount = Object.keys(ingMap).filter(iId => {
       const ing = ingredients.find(x => x.id === iId);
-      return ing && (ing.status === 'out' || ing.status === 'low');
+      return ing && ing.status !== 'in';
     }).length;
     const isActive = w === shopWeek;
     return `<div onclick="setShopWeek(${w})" style="flex-shrink:0;cursor:pointer;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid ${isActive ? 'var(--accent)' : 'var(--border)'};background:${isActive ? 'var(--accent)' : 'var(--surface)'};color:${isActive ? '#fff' : 'var(--text2)'};display:flex;align-items:center;gap:7px">
@@ -4469,13 +4108,14 @@ function renderShopping() {
   }).join('');
   document.getElementById('shop-week-tabs').innerHTML = tabsHtml;
 
-  // Build ingredient map for selected shopWeek
+  // Build ingredient map for selected shopWeek using component-based plan structure
   const week = monthPlan[shopWeek];
   const ingMap = {};
   week.forEach(dayPlan => {
     if (dayPlan.skipped) return;
-    ['B','L','S','D'].forEach(s => {
-      const entry = dayPlan[s];
+    // Collect all component entries (lunch and dinner separately if sameLd is off)
+    const allComps = {...(dayPlan.components||{}), ...(dayPlan.dinnerComponents||{})};
+    Object.values(allComps).forEach(entry => {
       if (!entry) return;
       const d = dishes.find(x => x.id === entry.dishId);
       if (!d) return;
@@ -4845,7 +4485,6 @@ const BASE_DISHES = [
   {id:'d112',name:'Paneer Tikka',icon:'🧀',mealType:['snack'],dishGroup:'protein-snack',ingredients:['ing_paneer','ing_shimla'],calories:200,nutrition:{protein:'high',fiber:'low',carb:'low'},defaultFrequency:2,isVeg:true},
   {id:'d113',name:'Chicken Tikka',icon:'🍗',mealType:['snack'],dishGroup:'protein-snack',ingredients:['ing_chicken'],calories:220,nutrition:{protein:'high',fiber:'low',carb:'low'},defaultFrequency:2,isVeg:false},
 ];
-
 
 // ═══════════════════════════════════════════════════════════════
 // MELO STARTER TEMPLATE
@@ -5243,7 +4882,6 @@ function manualAddFromBrowseWithHint(mealHint, nameHint) {
   }, 300);
 }
 
-
 function nbStart() {
   const u = getLoggedInUser();
   if (u) { nbState.adults = u.adults || 2; nbState.children = u.kids || 0; }
@@ -5354,8 +4992,6 @@ function _nbValidateHousehold() {
   return true;
 }
 
-function _nbValidateCuisines() { return true; }
-
 function _nbFilteredDishes(mealType) {
   return BASE_DISHES.filter(d => {
     const mts = Array.isArray(d.mealType) ? d.mealType : [d.mealType];
@@ -5393,7 +5029,6 @@ function _nbRenderDishGrid(screenNum, mealType) {
     return `<div class="nb-dish-card ${on?'selected':''}" onclick="nbToggleDish('${mealType}','${d.id}',${screenNum})">
       <div class="nb-d-icon">${d.icon}</div>
       <div class="nb-d-name">${d.name}</div>
-      <div class="nb-d-group">${ingNames}</div>
       <div class="nb-check">✓</div>
     </div>`;
   }).join('');
@@ -5409,9 +5044,7 @@ function nbToggleDish(mealType, dishId, screenNum) {
   _nbRenderDishGrid(screenNum, mealType);
 }
 
-function _nbValidateDishes() { return true; }
-
-function nbSwitchMeal() {} // legacy no-op
+// legacy no-op
 
 // ── Screen 1: Household ───────────────────────────────────
 function nbAdjHH(key, delta) {
@@ -5621,16 +5254,7 @@ function _nbFinalSave() {
   currentWeek = 0;
   shopWeek = 0;
 
-  // Save new-schema keys too (pf_*) for future reads
-  try {
-    localStorage.setItem('pf_setup_complete', 'true');
-    localStorage.setItem('pf_household', JSON.stringify({
-      adults: nbState.adults, children: nbState.children, dietaryPrefs: [...nbState.dietaryPrefs],
-    }));
-    localStorage.setItem('pf_cuisines', JSON.stringify(nbState.cuisines));
-  } catch(e) { console.warn('pf_* storage error', e); }
-
-  // Persist the whole profile state (legacy storage key)
+  // Persist the whole profile state
   saveState();
 
   // Hide onboarding, show app
@@ -5659,20 +5283,6 @@ function startOnboarding() {
 }
 
 // Legacy onboarding (kept as dead code for reference only — no longer reachable)
-function _legacyStartOnboarding() {
-  obStep = 0;
-  obSelected.breakfast = [];
-  obSelected.lunch = [];
-  obSelected.snacks = [];
-  // Household already collected from login — just carry forward from current state
-  obHH.adults = household.adults || 2;
-  obHH.kids   = household.kids   || 0;
-  _renderObChips('bk',  STARTER_DISHES.breakfast, 'breakfast');
-  _renderObChips('ld',  STARTER_DISHES.lunch,      'lunch');
-  _renderObChips('sn',  STARTER_DISHES.snacks,     'snacks');
-  _obShowStep(0);
-  document.getElementById('onboarding').style.display = 'flex';
-}
 
 function skipOnboarding() {
   document.getElementById('onboarding').style.display = 'none';
@@ -5707,13 +5317,6 @@ function _obUpdateNextBtn() {
   }
 }
 
-function _renderObChips(containerId, list, key) {
-  const container = document.getElementById('ob-' + containerId + '-chips');
-  if (!container) return;
-  container.innerHTML = list.map((d, i) =>
-    `<div class="ob-chip" id="ob-chip-${key}-${i}" onclick="obToggleChip('${key}',${i})">${d.emoji} ${d.name}</div>`
-  ).join('');
-}
 
 function obToggleChip(key, idx) {
   const sourceMap = {breakfast: STARTER_DISHES.breakfast, lunch: STARTER_DISHES.lunch, snacks: STARTER_DISHES.snacks};
@@ -5728,11 +5331,6 @@ function obToggleChip(key, idx) {
   const countEl = document.getElementById(countIds[key]);
   if (countEl) countEl.textContent = sel.length;
   _obUpdateNextBtn();
-}
-
-function obAdjHH(type, delta) {
-  obHH[type] = Math.max(0, obHH[type] + delta);
-  document.getElementById('ob-' + (type === 'adults' ? 'adults' : 'kids')).textContent = obHH[type];
 }
 
 function obBack() { if (obStep > 0) _obShowStep(obStep - 1); }
@@ -5837,12 +5435,6 @@ function executeRerunSetup() {
   setTimeout(() => startOnboarding(), 150);
 }
 // Stub old functions so nothing crashes
-function confirmResetDB()    { confirmRerunSetup(); }
-function cancelResetDB()     { cancelRerunSetup(); }
-function executeResetDB()    { executeRerunSetup(); }
-function confirmLoadSample() { toast('Use Re-run Setup to start fresh'); }
-function cancelLoadSample()  {}
-function executeLoadSample() {}
 
 function updateDBCard() {
   const metaEl = document.getElementById('db-meta-label');
@@ -5975,7 +5567,7 @@ function adjLoginFam(type, delta) {
   document.getElementById('login-' + type).textContent = loginState[type];
 }
 
-async function loginNext() {
+function loginNext() {
   if (loginStep === 'phone') {
     // Show phone on OTP screen
     document.getElementById('login-phone-display').textContent = loginState.cc + ' ' + loginState.phone;
@@ -6011,30 +5603,7 @@ async function loginNext() {
     };
     localStorage.setItem(LOGIN_KEY, JSON.stringify(user));
 
-    // Hide login screen immediately, show loading state
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-
-    // Try to load existing data from Supabase first
-    const cloudLoaded = await loadFromCloud(user.phone);
-
-    if (cloudLoaded) {
-      // Returning user — restore their data
-      _loadProfileIndex();
-      if (!activeProfileId || !profiles.find(p => p.id === activeProfileId)) {
-        // Create a local profile entry if missing
-        const newId = _genProfId();
-        profiles.push({id: newId, name: user.name, initials: _initialsFromName(user.name), createdAt: Date.now()});
-        activeProfileId = newId;
-        _saveProfileIndex();
-        saveState(); // persist loaded cloud data to localStorage too
-      }
-      init();
-      toast('Welcome back, ' + user.name.split(' ')[0] + '! ☁️ Data restored');
-      return; // skip the seed profile flow below
-    }
-
-    // New user — seed a profile with the user's name and family size
+    // Seed a profile with the user's name and family size
     const seedProfile = {
       name: user.name,
       adults: user.adults,
@@ -6044,37 +5613,16 @@ async function loginNext() {
 
     // Hide login, show app, run init
     document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
     init();
     toast('Welcome, ' + user.name.split(' ')[0] + '! 🎉');
   }
 }
 
-async function bootApp() {
+function bootApp() {
   if (isLoggedIn()) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
-
-    // Try to restore from Supabase first (returning user on new device)
-    const user = getLoggedInUser();
-    if (user && user.phone) {
-      try {
-        const cloudLoaded = await loadFromCloud(user.phone);
-        if (cloudLoaded) {
-          // Cloud data loaded — make sure a local profile exists to hold it
-          _loadProfileIndex();
-          if (!activeProfileId || !profiles.find(p => p.id === activeProfileId)) {
-            const newId = _genProfId();
-            profiles.push({id: newId, name: user.name || 'My Household', initials: _initialsFromName(user.name || 'MH'), createdAt: Date.now()});
-            activeProfileId = newId;
-            _saveProfileIndex();
-          }
-          saveState(); // persist cloud data to localStorage
-        }
-      } catch(e) {
-        console.warn('Cloud restore failed, using local data:', e);
-      }
-    }
-
     init();
   } else {
     document.getElementById('login-screen').style.display = 'flex';
@@ -6124,6 +5672,13 @@ function _checkAndRunWipeMigration() {
 _checkAndRunWipeMigration();
 
 bootApp();
+
+// ── PWA: register service worker for offline support ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW registration failed', err));
+  });
+}
 </script>
 </body>
 </html>

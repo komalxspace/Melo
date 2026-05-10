@@ -1,23 +1,33 @@
 {
-  "name": "PantryFlow",
-  "short_name": "PantryFlow",
-  "description": "Your personal Kitchen OS",
-  "start_url": "https://komalxspace.github.io/Melo/index.html",
-  "scope": "https://komalxspace.github.io/Melo/",
+  "name": "Melo — Meal Planner",
+  "short_name": "Melo",
+  "description": "Your kitchen's meal planner. Organise your pantry, dishes, and weekly meal plans.",
+  "start_url": "/Melo/",
+  "scope": "/Melo/",
   "display": "standalone",
-  "background_color": "#f5f0e8",
-  "theme_color": "#4a7c59",
   "orientation": "portrait",
+  "background_color": "#F7F3EE",
+  "theme_color": "#F7F3EE",
+  "lang": "en",
+  "categories": ["food", "lifestyle", "productivity"],
   "icons": [
     {
-      "src": "https://komalxspace.github.io/Melo/icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "src": "https://komalxspace.github.io/Melo/icon.png",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
