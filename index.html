@@ -708,6 +708,28 @@ body{background:var(--bg) !important}
 
 /* Force bottom safe-area to match nav surface — kills any dark iOS chrome bleed */
 body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:env(safe-area-inset-bottom);background:var(--surface);z-index:999;pointer-events:none}
+
+/* ── Profile screen ── */
+.profile-section{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:18px;margin:0 16px 12px}
+.profile-section h3{font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:14px;color:var(--text)}
+
+/* Household counter rows */
+.counter-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--surface2)}
+.counter-row:last-of-type{border-bottom:none}
+.cr-label{font-size:14px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px}
+.counter-controls{display:flex;align-items:center;gap:14px}
+.counter-controls button{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.counter-controls button:active{background:var(--accent-lite);border-color:var(--accent);color:var(--accent)}
+.counter-controls span{font-family:'Fraunces',serif;font-size:20px;font-weight:700;min-width:24px;text-align:center;color:var(--text)}
+
+/* This Week — shopping shortcut card */
+.shop-stat-card{display:flex;align-items:center;gap:14px;padding:14px;background:var(--tile);border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all .15s}
+.shop-stat-card:active{transform:scale(.99);border-color:var(--accent)}
+.shop-stat-icon{width:46px;height:46px;border-radius:12px;background:var(--accent-lite);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.shop-stat-info{flex:1;min-width:0}
+.shop-stat-value{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--text);line-height:1.1}
+.shop-stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+.shop-stat-arrow{font-size:22px;color:var(--text3);flex-shrink:0}
 </style>
 </head>
 <body>
@@ -5674,9 +5696,16 @@ _checkAndRunWipeMigration();
 bootApp();
 
 // ── PWA: register service worker for offline support ──
+// Only attempts when sw.js is reachable (silently no-ops in preview environments)
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW registration failed', err));
+  window.addEventListener('load', async () => {
+    try {
+      // Check sw.js exists before registering — avoids 404 noise in preview
+      const probe = await fetch('sw.js', { method: 'HEAD' });
+      if (probe.ok) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
+    } catch (_) { /* offline / preview — skip silently */ }
   });
 }
 </script>
