@@ -158,6 +158,11 @@ function Home({ size=24, color='currentColor', strokeWidth=2, fill='none', style
   );
 }
 const HomeIcon = Home;
+function Check({ size=24, color='currentColor', strokeWidth=2, style={}, ...rest }) {
+  return h('svg', { xmlns:'http://www.w3.org/2000/svg', width:size, height:size, viewBox:'0 0 24 24', fill:'none', stroke:color, strokeWidth, strokeLinecap:'round', strokeLinejoin:'round', style, ...rest },
+    h('path', { d:'M20 6L9 17l-5-5' })
+  );
+}
 
 
 
@@ -549,6 +554,7 @@ function WardrobeTracker() {
   const [form, setForm]             = useState({ name:'', category:'Tops', subType:'', color:'', house:0, photo:'' });
   const [analyzing, setAnalyzing]   = useState(false);
   const [analyzeError, setAnalyzeError] = useState('');
+  const [addStep, setAddStep]         = useState(0); // 0=type, 1=details, 2=home, 3=summary
   const fileInputRef = useRef(null);
 
   // ── Supabase auth — single source of truth ────────────────────────────────
@@ -804,14 +810,14 @@ function WardrobeTracker() {
   };
 
   const openAdd = () => {
-    setForm({ name: '', category: Object.keys(categories)[0] || 'Other', subType: '', color: '', house: activeHouse ?? 0, photo: '' });
-    setEditingItem(null); setAnalyzeError('');
+    setForm({ name: '', category: '', subType: '', color: '', house: activeHouse ?? 0, photo: '' });
+    setEditingItem(null); setAnalyzeError(''); setAddStep(0);
     setShowAddModal(true);
   };
 
   const openEdit = (item) => {
     setForm({ name: item.name, category: item.category, subType: item.subType, color: item.color, house: item.house, photo: item.photo });
-    setEditingItem(item); setAnalyzeError('');
+    setEditingItem(item); setAnalyzeError(''); setAddStep(3);
     setShowAddModal(true);
   };
 
@@ -1118,97 +1124,290 @@ function WardrobeTracker() {
           <Plus size={20} color="#f5f3ef" strokeWidth={1.8}/>
         </button>
 
-        {/* ══ ADD / EDIT MODAL ══ */}
+        {/* ══ ADD / EDIT MODAL — full-screen slide flow ══ */}
         {showAddModal && (
-          <div style={{ position:'fixed', inset:0, background:'rgba(26,24,22,0.42)', backdropFilter:'blur(4px)', display:'flex', alignItems:'flex-end', justifyContent:'center', zIndex:40 }}>
-            <div style={{ background:CREAM, width:'100%', maxWidth:560, borderRadius:'26px 26px 0 0', padding:'22px 22px 30px', maxHeight:'92vh', overflowY:'auto' }}>
-              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
-                <button onClick={() => setShowAddModal(false)} style={{ ...btnReset, padding:4, cursor:'pointer' }}><ChevronLeft size={18} color="#a8a29e" strokeWidth={1.8}/></button>
-                <h2 className="serif" style={{ margin:0, fontSize:18, fontWeight:600, color:'#1a1816' }}>{editingItem ? 'Edit Item' : 'New Item'}</h2>
-                <div style={{ width:26 }}/>
-              </div>
-              <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
-                {/* PHOTO */}
-                <div>
-                  <span style={labelStyle}>Photo</span>
-                  <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoUpload} style={{ display:'none' }}/>
-                  <button onClick={() => fileInputRef.current?.click()} disabled={analyzing}
-                    style={{ ...btnReset, width:'100%', background:CARD, border:'1.5px dashed rgba(44,42,38,0.14)', borderRadius:14, padding:12, cursor:'pointer', boxSizing:'border-box' }}>
-                    {form.photo ? (
-                      <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                        <img src={form.photo} alt="" style={{ width:52, height:52, borderRadius:10, objectFit:'cover' }}/>
-                        <div>
-                          <div style={{ fontSize:13, fontWeight:500, color:'#1a1816' }}>{analyzing ? 'Analysing…' : 'Photo added'}</div>
-                          <div style={{ fontSize:11, color:'#a8a29e', marginTop:2 }}>Tap to change</div>
-                        </div>
-                        {analyzing && <Sparkles size={15} color={GOLD} style={{ marginLeft:'auto' }}/>}
-                      </div>
-                    ) : (
-                      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:7, padding:'10px 0' }}>
-                        {analyzing
-                          ? <><Sparkles size={13} color={GOLD}/><span style={{ fontSize:13, color:'#5c5652' }}>Analysing…</span></>
-                          : <><Camera size={13} color="#a8a29e" strokeWidth={1.8}/><span style={{ fontSize:13, color:'#5c5652' }}>Add photo</span><span style={{ fontSize:11, color:GOLD, fontWeight:500 }}>· AI auto-fill</span></>
-                        }
-                      </div>
-                    )}
-                  </button>
-                  {analyzeError && <div style={{ fontSize:11, color:'#c0392b', marginTop:5 }}>{analyzeError}</div>}
+          <div style={{ position:'fixed', inset:0, background:'#FAF7F2', zIndex:40, display:'flex', flexDirection:'column', overflowY:'auto' }}>
+
+            {/* ── Top bar ── */}
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px 20px 12px', flexShrink:0 }}>
+              <button onClick={() => {
+                if (addStep > 0 && !editingItem) setAddStep(s => s - 1);
+                else { setShowAddModal(false); }
+              }} style={{ ...btnReset, width:36, height:36, borderRadius:'50%', background:CARD, border:'1px solid rgba(44,42,38,0.1)', cursor:'pointer' }}>
+                <ChevronLeft size={16} color="#5c5652" strokeWidth={2}/>
+              </button>
+
+              {/* Step dots — only for new items */}
+              {!editingItem && (
+                <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+                  {[0,1,2,3].map(s => (
+                    <div key={s} style={{ width: addStep===s ? 18 : 6, height:6, borderRadius:3, background: addStep===s ? '#1a1816' : addStep>s ? GOLD : '#e0d8cf', transition:'all .2s' }}/>
+                  ))}
                 </div>
-                {/* NAME */}
-                <div>
-                  <span style={labelStyle}>Item Name</span>
-                  <input value={form.name} onChange={e => setForm(p => ({ ...p, name:e.target.value }))} placeholder="Blue Cotton Kurta"
-                    style={{ width:'100%', padding:'10px 12px', background:CARD, border:'1px solid rgba(44,42,38,0.1)', borderRadius:10, fontSize:13, color:'#1a1816', outline:'none', boxSizing:'border-box' }}/>
-                </div>
-                {/* CAT + TYPE */}
-                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-                  <div>
-                    <span style={labelStyle}>Category</span>
-                    <select value={form.category} onChange={e => setForm(p => ({ ...p, category:e.target.value, subType:'' }))}
-                      style={{ width:'100%', padding:'10px', background:CARD, border:'1px solid rgba(44,42,38,0.1)', borderRadius:10, fontSize:12, color:'#1a1816', outline:'none', appearance:'none' }}>
-                      {Object.keys(categories).map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <span style={labelStyle}>Type</span>
-                    <select value={form.subType} onChange={e => setForm(p => ({ ...p, subType:e.target.value }))}
-                      style={{ width:'100%', padding:'10px', background:CARD, border:'1px solid rgba(44,42,38,0.1)', borderRadius:10, fontSize:12, color:'#1a1816', outline:'none', appearance:'none' }}>
-                      <option value="">Select</option>
-                      {(categories[form.category] || []).map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                  </div>
-                </div>
-                {/* COLOR */}
-                <div>
-                  <span style={labelStyle}>Color</span>
-                  <input value={form.color} onChange={e => setForm(p => ({ ...p, color:e.target.value }))} placeholder="Navy blue"
-                    style={{ width:'100%', padding:'10px 12px', background:CARD, border:'1px solid rgba(44,42,38,0.1)', borderRadius:10, fontSize:13, color:'#1a1816', outline:'none', boxSizing:'border-box' }}/>
-                </div>
-                {/* LOCATION */}
-                <div>
-                  <span style={labelStyle}>Location</span>
-                  <div style={{ display:'flex', gap:7, overflowX:'auto', paddingBottom:2 }} className="hs">
-                    {houses.map((h, i) => (
-                      <button key={i} onClick={() => setForm(p => ({ ...p, house:i }))} style={{
-                        ...btnReset, flexShrink:0, padding:'9px 12px', borderRadius:11, cursor:'pointer',
-                        background: form.house === i ? '#1a1816' : CARD,
-                        border: form.house === i ? 'none' : '1px solid rgba(44,42,38,0.1)',
-                        flexDirection:'column', alignItems:'flex-start', transition:'all .15s',
-                      }}>
-                        <div style={{ fontSize:8, letterSpacing:'0.1em', textTransform:'uppercase', color: form.house===i ? '#6b6560' : '#a8a29e', marginBottom:2 }}>Home {i+1}</div>
-                        <div style={{ fontSize:11, fontWeight:500, color: form.house===i ? '#f5f3ef' : '#5c5652' }}>{h}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <button onClick={handleSave} disabled={!form.name.trim() || analyzing}
-                  style={{ ...btnReset, background: form.name.trim() && !analyzing ? GOLD : '#d6cfc6', color:'#fff', borderRadius:12, padding:'14px', fontSize:13, fontWeight:600, letterSpacing:'0.03em', marginTop:4, cursor:'pointer', width:'100%', justifyContent:'center', transition:'background .15s' }}>
-                  {editingItem ? 'Save Changes' : 'Save Item'}
-                </button>
-              </div>
+              )}
+
+              <button onClick={() => setShowAddModal(false)} style={{ ...btnReset, width:36, height:36, borderRadius:'50%', background:CARD, border:'1px solid rgba(44,42,38,0.1)', cursor:'pointer' }}>
+                <X size={14} color="#5c5652" strokeWidth={2}/>
+              </button>
             </div>
+
+            {/* ── STEP 0 — Type picker ── */}
+            {addStep === 0 && (
+              <div style={{ flex:1, padding:'8px 20px 32px', display:'flex', flexDirection:'column' }}>
+                {/* Optional photo at top */}
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={async (e) => {
+                  const file = e.target.files?.[0]; if (!file) return;
+                  setAnalyzing(true); setAnalyzeError('');
+                  try {
+                    const { base64, mediaType, dataUrl } = await fileToBase64(file);
+                    setForm(p => ({ ...p, photo: dataUrl }));
+                    const catList = Object.keys(categories);
+                    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+                      method:'POST', headers:{'Content-Type':'application/json'},
+                      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:600,
+                        messages:[{ role:'user', content:[
+                          { type:'image', source:{ type:'base64', media_type:mediaType, data:base64 }},
+                          { type:'text', text:`Identify clothing item. Return ONLY JSON:\n{"name":"Title Case max 4 words","category":"one of: ${catList.join(', ')}","subType":"from ${JSON.stringify(categories)}","color":"primary color"}` }
+                        ]}]
+                      })
+                    });
+                    const data = await resp.json();
+                    const raw = data.content.map(c => c.type==='text'?c.text:'').join('').replace(/```json|```/g,'').trim();
+                    const p = JSON.parse(raw);
+                    const vc = catList.includes(p.category) ? p.category : '';
+                    const vt = (categories[vc]||[]).includes(p.subType) ? p.subType : '';
+                    setForm(prev => ({ ...prev, name:p.name||prev.name, category:vc, subType:vt, color:p.color||prev.color }));
+                  } catch { setAnalyzeError('Could not read photo — fill in manually.'); }
+                  finally { setAnalyzing(false); }
+                }} style={{ display:'none' }}/>
+
+                {/* Photo strip */}
+                <button onClick={() => fileInputRef.current?.click()} style={{ ...btnReset, cursor:'pointer', alignSelf:'center', marginBottom:20, borderRadius:14, overflow:'hidden', background: form.photo ? 'transparent' : CARD, border: form.photo ? 'none' : '1.5px dashed rgba(44,42,38,0.15)', padding: form.photo ? 0 : '10px 18px', flexDirection:'row', gap:7 }}>
+                  {form.photo ? (
+                    <div style={{ position:'relative' }}>
+                      <img src={form.photo} style={{ width:72, height:72, borderRadius:14, objectFit:'cover', display:'block' }}/>
+                      <div style={{ position:'absolute', inset:0, borderRadius:14, background:'rgba(0,0,0,0.18)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                        <Camera size={16} color="#fff" strokeWidth={1.8}/>
+                      </div>
+                    </div>
+                  ) : (
+                    analyzing ? <><Sparkles size={13} color={GOLD}/><span style={{ fontSize:12, color:'#a8a29e' }}>Scanning…</span></>
+                    : <><Camera size={13} color="#a8a29e" strokeWidth={1.8}/><span style={{ fontSize:12, color:'#a8a29e' }}>Add photo</span><span style={{ fontSize:11, color:GOLD, fontWeight:500 }}>· AI fills form</span></>
+                  )}
+                </button>
+                {analyzeError && <p style={{ fontSize:11, color:'#c0392b', textAlign:'center', margin:'-12px 0 12px' }}>{analyzeError}</p>}
+
+                <h2 className="serif" style={{ fontSize:26, fontWeight:600, color:'#1a1816', margin:'0 0 6px', letterSpacing:'-0.3px' }}>What type?</h2>
+                <p style={{ fontSize:13, color:'#a8a29e', margin:'0 0 20px' }}>Select category, then sub-type</p>
+
+                {/* Category chips */}
+                <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:16 }}>
+                  {Object.keys(categories).map(cat => {
+                    const sel = form.category === cat;
+                    return (
+                      <button key={cat} onClick={() => setForm(p => ({ ...p, category:cat, subType:'' }))}
+                        style={{ ...btnReset, padding:'9px 16px', borderRadius:24, fontSize:13, fontWeight: sel?600:400, cursor:'pointer', transition:'all .15s', border:'none',
+                          background: sel ? '#1a1816' : CARD,
+                          color: sel ? '#f5f3ef' : '#5c5652',
+                          boxShadow: sel ? '0 2px 8px rgba(26,24,22,0.18)' : '0 1px 3px rgba(44,42,38,0.08)',
+                        }}>
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Sub-type chips — slide in once category is selected */}
+                {form.category && (categories[form.category]||[]).length > 0 && (
+                  <div className="fade-up">
+                    <p style={{ fontSize:11, letterSpacing:'0.08em', textTransform:'uppercase', fontWeight:600, color:'#a8a29e', margin:'0 0 10px' }}>{form.category}</p>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:7 }}>
+                      {(categories[form.category]||[]).map(type => {
+                        const sel = form.subType === type;
+                        return (
+                          <button key={type} onClick={() => setForm(p => ({ ...p, subType:type }))}
+                            style={{ ...btnReset, padding:'8px 14px', borderRadius:20, fontSize:12, fontWeight: sel?600:400, cursor:'pointer', transition:'all .15s', border:'none',
+                              background: sel ? GOLD : '#f0ece8',
+                              color: sel ? '#fff' : '#5c5652',
+                              boxShadow: sel ? `0 2px 8px ${GOLD}44` : 'none',
+                            }}>
+                            {type}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Next button — enabled once category selected */}
+                <div style={{ marginTop:'auto', paddingTop:24 }}>
+                  <button onClick={() => setAddStep(1)} disabled={!form.category}
+                    style={{ ...btnReset, width:'100%', padding:'15px', borderRadius:14, fontSize:14, fontWeight:600, cursor: form.category?'pointer':'not-allowed',
+                      background: form.category ? '#1a1816' : '#e0d8cf', color: form.category ? '#f5f3ef' : '#a8a29e',
+                      justifyContent:'center', transition:'all .15s',
+                    }}>
+                    Continue →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── STEP 1 — Name + Color ── */}
+            {addStep === 1 && (
+              <div style={{ flex:1, padding:'8px 20px 32px', display:'flex', flexDirection:'column' }}>
+                <div style={{ marginBottom:24 }}>
+                  {form.photo && <img src={form.photo} style={{ width:64, height:64, borderRadius:14, objectFit:'cover', marginBottom:16 }}/>}
+                  <h2 className="serif" style={{ fontSize:26, fontWeight:600, color:'#1a1816', margin:'0 0 4px', letterSpacing:'-0.3px' }}>Name it</h2>
+                  <p style={{ fontSize:13, color:'#a8a29e', margin:0 }}>What should we call this?</p>
+                </div>
+
+                {/* Name */}
+                <div style={{ marginBottom:16 }}>
+                  <span style={{ fontSize:10, letterSpacing:'0.1em', fontWeight:600, textTransform:'uppercase', color:'#a8a29e', display:'block', marginBottom:8 }}>Name</span>
+                  <input
+                    autoFocus
+                    value={form.name}
+                    onChange={e => setForm(p => ({ ...p, name:e.target.value }))}
+                    placeholder={form.subType ? `e.g. My favourite ${form.subType}` : 'e.g. Blue cotton kurta'}
+                    onKeyDown={e => { if (e.key==='Enter' && form.name.trim()) setAddStep(2); }}
+                    style={{ width:'100%', padding:'14px 16px', background:CARD, border:'1.5px solid rgba(44,42,38,0.12)', borderRadius:14, fontSize:16, color:'#1a1816', outline:'none', boxSizing:'border-box' }}
+                  />
+                </div>
+
+                {/* Color swatches + text */}
+                <div>
+                  <span style={{ fontSize:10, letterSpacing:'0.1em', fontWeight:600, textTransform:'uppercase', color:'#a8a29e', display:'block', marginBottom:8 }}>Color</span>
+                  <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:10 }}>
+                    {['White','Black','Navy','Blue','Red','Pink','Green','Yellow','Grey','Brown','Beige','Maroon','Floral','Mixed'].map(col => {
+                      const swatchColors = { White:'#f5f3ef',Black:'#1a1816',Navy:'#1e3a66',Blue:'#5b7ca3',Red:'#b85450',Pink:'#d89aab',Green:'#7a8b6f',Yellow:'#d4a85c',Grey:'#9c9a95',Brown:'#7a5c42',Beige:'#d4c5a0',Maroon:'#7a3838',Floral:'#e0a8b5',Mixed:'#b5a8c0' };
+                      const sel = form.color === col;
+                      return (
+                        <button key={col} onClick={() => setForm(p => ({ ...p, color:col }))}
+                          style={{ ...btnReset, width:32, height:32, borderRadius:'50%', cursor:'pointer', flexShrink:0,
+                            background: swatchColors[col] || '#ccc',
+                            border: sel ? '3px solid #1a1816' : '2px solid rgba(44,42,38,0.12)',
+                            boxShadow: sel ? '0 0 0 2px #FAF7F2' : 'none',
+                            transition:'all .12s',
+                          }} title={col}/>
+                      );
+                    })}
+                  </div>
+                  <input value={form.color} onChange={e => setForm(p => ({ ...p, color:e.target.value }))}
+                    placeholder="or type any color…"
+                    style={{ width:'100%', padding:'10px 14px', background:CARD, border:'1px solid rgba(44,42,38,0.1)', borderRadius:10, fontSize:13, color:'#1a1816', outline:'none', boxSizing:'border-box' }}/>
+                </div>
+
+                <div style={{ marginTop:'auto', paddingTop:24 }}>
+                  <button onClick={() => setAddStep(2)} disabled={!form.name.trim()}
+                    style={{ ...btnReset, width:'100%', padding:'15px', borderRadius:14, fontSize:14, fontWeight:600, cursor: form.name.trim()?'pointer':'not-allowed',
+                      background: form.name.trim() ? '#1a1816' : '#e0d8cf', color: form.name.trim() ? '#f5f3ef' : '#a8a29e',
+                      justifyContent:'center', transition:'all .15s',
+                    }}>
+                    Continue →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── STEP 2 — Home ── */}
+            {addStep === 2 && (
+              <div style={{ flex:1, padding:'8px 20px 32px', display:'flex', flexDirection:'column' }}>
+                <div style={{ marginBottom:28 }}>
+                  <h2 className="serif" style={{ fontSize:26, fontWeight:600, color:'#1a1816', margin:'0 0 4px', letterSpacing:'-0.3px' }}>Where is it?</h2>
+                  <p style={{ fontSize:13, color:'#a8a29e', margin:0 }}>Which home is this item at right now?</p>
+                </div>
+
+                <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                  {houses.map((h, i) => {
+                    const sel = form.house === i;
+                    const emojis = ['🏠','🌸','💜','🏡','✨','🌿'];
+                    return (
+                      <button key={i} onClick={() => { setForm(p => ({ ...p, house:i })); setAddStep(3); }}
+                        style={{ ...btnReset, padding:'18px 20px', borderRadius:18, cursor:'pointer', textAlign:'left', transition:'all .18s',
+                          background: sel ? '#1a1816' : CARD,
+                          boxShadow: sel ? '0 4px 16px rgba(26,24,22,0.2)' : '0 1px 4px rgba(44,42,38,0.07)',
+                          flexDirection:'row', alignItems:'center', gap:14,
+                        }}>
+                        <span style={{ fontSize:28 }}>{emojis[i % emojis.length]}</span>
+                        <div style={{ flex:1 }}>
+                          <div style={{ fontSize:15, fontWeight:600, color: sel?'#f5f3ef':'#1a1816' }}>{h}</div>
+                          <div style={{ fontSize:11, color: sel?'#a8a29e':'#a8a29e', marginTop:2 }}>{hCounts[i]} items already here</div>
+                        </div>
+                        {sel && <Check size={18} color={GOLD} strokeWidth={2.5}/>}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div style={{ marginTop:'auto', paddingTop:24 }}>
+                  <button onClick={() => setAddStep(3)}
+                    style={{ ...btnReset, width:'100%', padding:'15px', borderRadius:14, fontSize:14, fontWeight:600, cursor:'pointer',
+                      background: '#1a1816', color:'#f5f3ef', justifyContent:'center',
+                    }}>
+                    Review →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── STEP 3 — Summary ── */}
+            {addStep === 3 && (
+              <div style={{ flex:1, padding:'8px 20px 32px', display:'flex', flexDirection:'column' }}>
+                <div style={{ marginBottom:20 }}>
+                  <h2 className="serif" style={{ fontSize:26, fontWeight:600, color:'#1a1816', margin:'0 0 4px', letterSpacing:'-0.3px' }}>
+                    {editingItem ? 'Edit item' : 'Looks good?'}
+                  </h2>
+                  <p style={{ fontSize:13, color:'#a8a29e', margin:0 }}>Tap any field to change it</p>
+                </div>
+
+                {/* Photo + title hero */}
+                <div style={{ display:'flex', gap:14, marginBottom:20, padding:'16px', background:CARD, borderRadius:18, boxShadow:'0 1px 4px rgba(44,42,38,0.06)' }}>
+                  <div style={{ flexShrink:0 }}>
+                    <img src={form.photo || makeClothSvg(form.subType, form.color)} style={{ width:72, height:72, borderRadius:12, objectFit:'cover', background:'#F5F3EF' }}/>
+                  </div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:17, fontWeight:600, color:'#1a1816', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis' }}>{form.name || '—'}</div>
+                    <div style={{ fontSize:12, color:'#a8a29e', marginTop:3 }}>
+                      {[form.category, form.subType, form.color].filter(Boolean).join(' · ')}
+                    </div>
+                    <div style={{ fontSize:11, color:GOLD, fontWeight:600, marginTop:5, textTransform:'uppercase', letterSpacing:'0.06em' }}>
+                      {houses[form.house]}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Editable summary rows */}
+                {[
+                  { label:'Type', value: [form.category, form.subType].filter(Boolean).join(' / ') || 'Not set', step:0 },
+                  { label:'Name', value: form.name || 'Not set', step:1 },
+                  { label:'Color', value: form.color || 'Not set', step:1 },
+                  { label:'Home', value: houses[form.house], step:2 },
+                ].map(row => (
+                  <button key={row.label} onClick={() => setAddStep(row.step)}
+                    style={{ ...btnReset, width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'13px 0', borderBottom:'1px solid rgba(44,42,38,0.07)', cursor:'pointer' }}>
+                    <span style={{ fontSize:12, color:'#a8a29e', fontWeight:500, minWidth:52 }}>{row.label}</span>
+                    <span style={{ fontSize:13, color:'#1a1816', fontWeight:500, flex:1, textAlign:'left', marginLeft:12 }}>{row.value}</span>
+                    <ChevronRight size={14} color="#c4b8a8" strokeWidth={1.8}/>
+                  </button>
+                ))}
+
+                <div style={{ marginTop:'auto', paddingTop:28 }}>
+                  <button onClick={handleSave} disabled={!form.name.trim() || !form.category || analyzing}
+                    style={{ ...btnReset, width:'100%', padding:'16px', borderRadius:14, fontSize:14, fontWeight:600,
+                      cursor: form.name.trim() && form.category ? 'pointer' : 'not-allowed',
+                      background: form.name.trim() && form.category ? GOLD : '#e0d8cf',
+                      color: form.name.trim() && form.category ? '#fff' : '#a8a29e',
+                      justifyContent:'center', letterSpacing:'0.02em', transition:'all .15s',
+                    }}>
+                    {editingItem ? 'Save Changes' : '+ Add to Wardrobe'}
+                  </button>
+                </div>
+              </div>
+            )}
+
           </div>
         )}
+
 
         {/* ══ MOVE MODAL ══ */}
         {movingItem && (
