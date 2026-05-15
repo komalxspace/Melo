@@ -166,6 +166,197 @@ function Check({ size=24, color='currentColor', strokeWidth=2, style={}, ...rest
 
 
 
+
+// ─── ONBOARDING ───────────────────────────────────────────────────────────────
+const ILL_WARDROBE = 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20320%20280%22%3E%0A%20%20%3Crect%20width%3D%22320%22%20height%3D%22280%22%20fill%3D%22%23FDF6F0%22/%3E%0A%20%20%0A%20%20%3C%21--%20Wardrobe%20cabinet%20--%3E%0A%20%20%3Crect%20x%3D%22140%22%20y%3D%2250%22%20width%3D%22130%22%20height%3D%22180%22%20rx%3D%226%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%222%22/%3E%0A%20%20%3C%21--%20Wardrobe%20door%20split%20line%20--%3E%0A%20%20%3Cline%20x1%3D%22205%22%20y1%3D%2252%22%20x2%3D%22205%22%20y2%3D%22228%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Wardrobe%20top%20shelf%20--%3E%0A%20%20%3Crect%20x%3D%22148%22%20y%3D%2268%22%20width%3D%22114%22%20height%3D%2218%22%20rx%3D%223%22%20fill%3D%22%23EDE0C8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Boxes%20on%20shelf%20--%3E%0A%20%20%3Crect%20x%3D%22152%22%20y%3D%2270%22%20width%3D%2222%22%20height%3D%2214%22%20rx%3D%222%22%20fill%3D%22%23D4B8A0%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221%22/%3E%0A%20%20%3Crect%20x%3D%22178%22%20y%3D%2270%22%20width%3D%2222%22%20height%3D%2214%22%20rx%3D%222%22%20fill%3D%22%23C8D4B8%22%20stroke%3D%22%23B0B898%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C%21--%20Hanging%20rod%20--%3E%0A%20%20%3Cline%20x1%3D%22150%22%20y1%3D%22100%22%20x2%3D%22262%22%20y2%3D%22100%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%222%22/%3E%0A%20%20%3C%21--%20Hangers%20%2B%20clothes%20--%3E%0A%20%20%3C%21--%20Hanger%201%20-%20pink%20dress%20--%3E%0A%20%20%3Cpath%20d%3D%22M168%20100%20L168%20110%20M163%20110%20L173%20110%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M160%20110%20Q168%20106%20176%20110%20L178%20140%20L158%20140%20Z%22%20fill%3D%22%23F4C5C0%22%20stroke%3D%22%23D4A09A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Hanger%202%20-%20sage%20top%20--%3E%0A%20%20%3Cpath%20d%3D%22M188%20100%20L188%20110%20M183%20110%20L193%20110%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M178%20110%20Q188%20106%20198%20110%20L196%20130%20L180%20130%20Z%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Hanger%203%20-%20blue%20--%3E%0A%20%20%3Cpath%20d%3D%22M210%20100%20L210%20110%20M205%20110%20L215%20110%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M202%20110%20Q210%20106%20218%20110%20L220%20140%20L200%20140%20Z%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Hanger%204%20-%20blush%20--%3E%0A%20%20%3Cpath%20d%3D%22M232%20100%20L232%20110%20M227%20110%20L237%20110%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M224%20110%20Q232%20106%20240%20110%20L242%20128%20L222%20128%20Z%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.2%22/%3E%0A%0A%20%20%3C%21--%20Clothes%20pile%20on%20floor%20%28messy%29%20--%3E%0A%20%20%3Cellipse%20cx%3D%22190%22%20cy%3D%22240%22%20rx%3D%2250%22%20ry%3D%2212%22%20fill%3D%22%23EDE0C8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3Cpath%20d%3D%22M148%20238%20Q165%20228%20180%20234%20Q195%20240%20210%20230%20Q225%20222%20238%20232%22%20fill%3D%22%23F4C5C0%22%20stroke%3D%22%23D4A09A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3Cpath%20d%3D%22M155%20242%20Q175%20235%20195%20241%20Q210%20246%20228%20238%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22244%22%20r%3D%228%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221%22/%3E%0A%20%20%3Ccircle%20cx%3D%22220%22%20cy%3D%22238%22%20r%3D%226%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221%22/%3E%0A%0A%20%20%3C%21--%20Woman%20character%20--%3E%0A%20%20%3C%21--%20Body%20/%20dress%20--%3E%0A%20%20%3Cpath%20d%3D%22M72%20130%20Q60%20150%2058%20200%20L98%20200%20Q96%20150%2084%20130%20Z%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.8%22/%3E%0A%20%20%3C%21--%20Dress%20detail%20--%3E%0A%20%20%3Cpath%20d%3D%22M65%20165%20Q78%20170%2091%20165%22%20fill%3D%22none%22%20stroke%3D%22%23D4C0A8%22%20stroke-width%3D%221%22%20stroke-dasharray%3D%223%2C2%22/%3E%0A%20%20%3C%21--%20Arms%20--%3E%0A%20%20%3Cpath%20d%3D%22M62%20140%20Q48%20148%2044%20158%22%20stroke%3D%22%23F2C8B0%22%20stroke-width%3D%228%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22/%3E%0A%20%20%3Cpath%20d%3D%22M84%20132%20Q92%20120%2098%20118%22%20stroke%3D%22%23F2C8B0%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22/%3E%0A%20%20%3C%21--%20Hand%20at%20cheek%20%28worried%20gesture%29%20--%3E%0A%20%20%3Ccircle%20cx%3D%2244%22%20cy%3D%22160%22%20r%3D%226%22%20fill%3D%22%23F2C8B0%22%20stroke%3D%22%23D4A888%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C%21--%20Head%20--%3E%0A%20%20%3Ccircle%20cx%3D%2278%22%20cy%3D%22112%22%20r%3D%2220%22%20fill%3D%22%23F2C8B0%22%20stroke%3D%22%23D4A888%22%20stroke-width%3D%221.8%22/%3E%0A%20%20%3C%21--%20Hair%20--%3E%0A%20%20%3Cpath%20d%3D%22M60%20108%20Q63%2088%2078%2086%20Q93%2088%2096%20108%22%20fill%3D%22%238B6A50%22%20stroke%3D%22none%22/%3E%0A%20%20%3Cpath%20d%3D%22M60%20108%20Q56%20118%2060%20124%22%20fill%3D%22%238B6A50%22%20stroke%3D%22none%22/%3E%0A%20%20%3C%21--%20Face%20-%20worried%20expression%20--%3E%0A%20%20%3C%21--%20Eyes%20--%3E%0A%20%20%3Ccircle%20cx%3D%2271%22%20cy%3D%22112%22%20r%3D%222.5%22%20fill%3D%22%235C4030%22/%3E%0A%20%20%3Ccircle%20cx%3D%2285%22%20cy%3D%22112%22%20r%3D%222.5%22%20fill%3D%22%235C4030%22/%3E%0A%20%20%3C%21--%20Eyebrows%20-%20furrowed%20--%3E%0A%20%20%3Cpath%20d%3D%22M67%20106%20Q71%20104%2075%20106%22%20stroke%3D%22%238B6A50%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M81%20106%20Q85%20104%2089%20106%22%20stroke%3D%22%238B6A50%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3C%21--%20Mouth%20-%20small%20worried%20--%3E%0A%20%20%3Cpath%20d%3D%22M73%20120%20Q78%20118%2083%20120%22%20stroke%3D%22%23C89080%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3C%21--%20Blush%20--%3E%0A%20%20%3Cellipse%20cx%3D%2268%22%20cy%3D%22118%22%20rx%3D%225%22%20ry%3D%223%22%20fill%3D%22%23F4A0A0%22%20opacity%3D%220.3%22/%3E%0A%20%20%3Cellipse%20cx%3D%2288%22%20cy%3D%22118%22%20rx%3D%225%22%20ry%3D%223%22%20fill%3D%22%23F4A0A0%22%20opacity%3D%220.3%22/%3E%0A%0A%20%20%3C%21--%20Question%20mark%20/%20confused%20lines%20--%3E%0A%20%20%3Ctext%20x%3D%22100%22%20y%3D%22100%22%20font-size%3D%2218%22%20fill%3D%22%23C8A98A%22%20font-family%3D%22serif%22%20opacity%3D%220.8%22%3E%3F%3C/text%3E%0A%20%20%3Cpath%20d%3D%22M105%2082%20Q108%2076%20112%2080%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%3C/svg%3E';
+const ILL_HOMES    = 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20320%20200%22%3E%0A%20%20%3Crect%20width%3D%22320%22%20height%3D%22200%22%20fill%3D%22%23FDF6F0%22/%3E%0A%0A%20%20%3C%21--%20Home%201%20-%20left%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%2830%2C50%29%22%3E%0A%20%20%20%20%3Cpolygon%20points%3D%2240%2C0%2080%2C35%200%2C35%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2210%22%20y%3D%2235%22%20width%3D%2260%22%20height%3D%2255%22%20rx%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.8%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2228%22%20y%3D%2255%22%20width%3D%2224%22%20height%3D%2235%22%20rx%3D%222%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2274%22%20r%3D%222%22%20fill%3D%22%23C8A98A%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2214%22%20y%3D%2242%22%20width%3D%2216%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2250%22%20y%3D%2242%22%20width%3D%2216%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C/g%3E%0A%0A%20%20%3C%21--%20Home%202%20-%20centre%20%28slightly%20larger%2C%20featured%29%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%28118%2C30%29%22%3E%0A%20%20%20%20%3Cpolygon%20points%3D%2242%2C0%2084%2C38%200%2C38%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2210%22%20y%3D%2238%22%20width%3D%2264%22%20height%3D%2260%22%20rx%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2228%22%20y%3D%2260%22%20width%3D%2226%22%20height%3D%2238%22%20rx%3D%222%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2254%22%20cy%3D%2280%22%20r%3D%222.5%22%20fill%3D%22%23C8A98A%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2213%22%20y%3D%2246%22%20width%3D%2217%22%20height%3D%2217%22%20rx%3D%222%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2254%22%20y%3D%2246%22%20width%3D%2217%22%20height%3D%2217%22%20rx%3D%222%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3C%21--%20Chimney%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22-12%22%20width%3D%2210%22%20height%3D%2218%22%20fill%3D%22%23EDE0C8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%20%20%3C%21--%20Smoke%20--%3E%0A%20%20%20%20%3Cpath%20d%3D%22M63%20-14%20Q59%20-20%2063%20-26%20Q67%20-32%2063%20-38%22%20stroke%3D%22%23D4C0A8%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20opacity%3D%220.6%22/%3E%0A%20%20%3C/g%3E%0A%0A%20%20%3C%21--%20Home%203%20-%20right%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%28218%2C50%29%22%3E%0A%20%20%20%20%3Cpolygon%20points%3D%2240%2C0%2080%2C35%200%2C35%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2210%22%20y%3D%2235%22%20width%3D%2260%22%20height%3D%2255%22%20rx%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.8%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2228%22%20y%3D%2255%22%20width%3D%2224%22%20height%3D%2235%22%20rx%3D%222%22%20fill%3D%22%23EDE0C8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2274%22%20r%3D%222%22%20fill%3D%22%23C8A98A%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2214%22%20y%3D%2242%22%20width%3D%2216%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2250%22%20y%3D%2242%22%20width%3D%2216%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C/g%3E%0A%0A%20%20%3C%21--%20Connecting%20dotted%20path%20between%20homes%20--%3E%0A%20%20%3Cpath%20d%3D%22M115%20140%20Q160%20155%20210%20140%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20stroke-dasharray%3D%224%2C3%22%20fill%3D%22none%22%20opacity%3D%220.6%22/%3E%0A%20%20%0A%20%20%3C%21--%20Small%20potli%20bag%20floating%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%28148%2C148%29%22%3E%0A%20%20%20%20%3Cellipse%20cx%3D%2212%22%20cy%3D%2220%22%20rx%3D%2210%22%20ry%3D%228%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%20%20%3Crect%20x%3D%226%22%20y%3D%2212%22%20width%3D%2212%22%20height%3D%228%22%20rx%3D%223%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Cellipse%20cx%3D%228%22%20cy%3D%2210%22%20rx%3D%224%22%20ry%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221%22/%3E%0A%20%20%20%20%3Cellipse%20cx%3D%2216%22%20cy%3D%2210%22%20rx%3D%224%22%20ry%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E';
+
+
+// ─── ONBOARDING ───────────────────────────────────────────────────────────────
+const ILL_WARDROBE = 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20320%20280%22%3E%0A%20%20%3Crect%20width%3D%22320%22%20height%3D%22280%22%20fill%3D%22%23FDF6F0%22/%3E%0A%20%20%0A%20%20%3C%21--%20Wardrobe%20cabinet%20--%3E%0A%20%20%3Crect%20x%3D%22140%22%20y%3D%2250%22%20width%3D%22130%22%20height%3D%22180%22%20rx%3D%226%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%222%22/%3E%0A%20%20%3C%21--%20Wardrobe%20door%20split%20line%20--%3E%0A%20%20%3Cline%20x1%3D%22205%22%20y1%3D%2252%22%20x2%3D%22205%22%20y2%3D%22228%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Wardrobe%20top%20shelf%20--%3E%0A%20%20%3Crect%20x%3D%22148%22%20y%3D%2268%22%20width%3D%22114%22%20height%3D%2218%22%20rx%3D%223%22%20fill%3D%22%23EDE0C8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Boxes%20on%20shelf%20--%3E%0A%20%20%3Crect%20x%3D%22152%22%20y%3D%2270%22%20width%3D%2222%22%20height%3D%2214%22%20rx%3D%222%22%20fill%3D%22%23D4B8A0%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221%22/%3E%0A%20%20%3Crect%20x%3D%22178%22%20y%3D%2270%22%20width%3D%2222%22%20height%3D%2214%22%20rx%3D%222%22%20fill%3D%22%23C8D4B8%22%20stroke%3D%22%23B0B898%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C%21--%20Hanging%20rod%20--%3E%0A%20%20%3Cline%20x1%3D%22150%22%20y1%3D%22100%22%20x2%3D%22262%22%20y2%3D%22100%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%222%22/%3E%0A%20%20%3C%21--%20Hangers%20%2B%20clothes%20--%3E%0A%20%20%3C%21--%20Hanger%201%20-%20pink%20dress%20--%3E%0A%20%20%3Cpath%20d%3D%22M168%20100%20L168%20110%20M163%20110%20L173%20110%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M160%20110%20Q168%20106%20176%20110%20L178%20140%20L158%20140%20Z%22%20fill%3D%22%23F4C5C0%22%20stroke%3D%22%23D4A09A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Hanger%202%20-%20sage%20top%20--%3E%0A%20%20%3Cpath%20d%3D%22M188%20100%20L188%20110%20M183%20110%20L193%20110%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M178%20110%20Q188%20106%20198%20110%20L196%20130%20L180%20130%20Z%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Hanger%203%20-%20blue%20--%3E%0A%20%20%3Cpath%20d%3D%22M210%20100%20L210%20110%20M205%20110%20L215%20110%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M202%20110%20Q210%20106%20218%20110%20L220%20140%20L200%20140%20Z%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Hanger%204%20-%20blush%20--%3E%0A%20%20%3Cpath%20d%3D%22M232%20100%20L232%20110%20M227%20110%20L237%20110%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M224%20110%20Q232%20106%20240%20110%20L242%20128%20L222%20128%20Z%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.2%22/%3E%0A%0A%20%20%3C%21--%20Clothes%20pile%20on%20floor%20%28messy%29%20--%3E%0A%20%20%3Cellipse%20cx%3D%22190%22%20cy%3D%22240%22%20rx%3D%2250%22%20ry%3D%2212%22%20fill%3D%22%23EDE0C8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3Cpath%20d%3D%22M148%20238%20Q165%20228%20180%20234%20Q195%20240%20210%20230%20Q225%20222%20238%20232%22%20fill%3D%22%23F4C5C0%22%20stroke%3D%22%23D4A09A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3Cpath%20d%3D%22M155%20242%20Q175%20235%20195%20241%20Q210%20246%20228%20238%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22244%22%20r%3D%228%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221%22/%3E%0A%20%20%3Ccircle%20cx%3D%22220%22%20cy%3D%22238%22%20r%3D%226%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221%22/%3E%0A%0A%20%20%3C%21--%20Woman%20character%20--%3E%0A%20%20%3C%21--%20Body%20/%20dress%20--%3E%0A%20%20%3Cpath%20d%3D%22M72%20130%20Q60%20150%2058%20200%20L98%20200%20Q96%20150%2084%20130%20Z%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.8%22/%3E%0A%20%20%3C%21--%20Dress%20detail%20--%3E%0A%20%20%3Cpath%20d%3D%22M65%20165%20Q78%20170%2091%20165%22%20fill%3D%22none%22%20stroke%3D%22%23D4C0A8%22%20stroke-width%3D%221%22%20stroke-dasharray%3D%223%2C2%22/%3E%0A%20%20%3C%21--%20Arms%20--%3E%0A%20%20%3Cpath%20d%3D%22M62%20140%20Q48%20148%2044%20158%22%20stroke%3D%22%23F2C8B0%22%20stroke-width%3D%228%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22/%3E%0A%20%20%3Cpath%20d%3D%22M84%20132%20Q92%20120%2098%20118%22%20stroke%3D%22%23F2C8B0%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22/%3E%0A%20%20%3C%21--%20Hand%20at%20cheek%20%28worried%20gesture%29%20--%3E%0A%20%20%3Ccircle%20cx%3D%2244%22%20cy%3D%22160%22%20r%3D%226%22%20fill%3D%22%23F2C8B0%22%20stroke%3D%22%23D4A888%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C%21--%20Head%20--%3E%0A%20%20%3Ccircle%20cx%3D%2278%22%20cy%3D%22112%22%20r%3D%2220%22%20fill%3D%22%23F2C8B0%22%20stroke%3D%22%23D4A888%22%20stroke-width%3D%221.8%22/%3E%0A%20%20%3C%21--%20Hair%20--%3E%0A%20%20%3Cpath%20d%3D%22M60%20108%20Q63%2088%2078%2086%20Q93%2088%2096%20108%22%20fill%3D%22%238B6A50%22%20stroke%3D%22none%22/%3E%0A%20%20%3Cpath%20d%3D%22M60%20108%20Q56%20118%2060%20124%22%20fill%3D%22%238B6A50%22%20stroke%3D%22none%22/%3E%0A%20%20%3C%21--%20Face%20-%20worried%20expression%20--%3E%0A%20%20%3C%21--%20Eyes%20--%3E%0A%20%20%3Ccircle%20cx%3D%2271%22%20cy%3D%22112%22%20r%3D%222.5%22%20fill%3D%22%235C4030%22/%3E%0A%20%20%3Ccircle%20cx%3D%2285%22%20cy%3D%22112%22%20r%3D%222.5%22%20fill%3D%22%235C4030%22/%3E%0A%20%20%3C%21--%20Eyebrows%20-%20furrowed%20--%3E%0A%20%20%3Cpath%20d%3D%22M67%20106%20Q71%20104%2075%20106%22%20stroke%3D%22%238B6A50%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M81%20106%20Q85%20104%2089%20106%22%20stroke%3D%22%238B6A50%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3C%21--%20Mouth%20-%20small%20worried%20--%3E%0A%20%20%3Cpath%20d%3D%22M73%20120%20Q78%20118%2083%20120%22%20stroke%3D%22%23C89080%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3C%21--%20Blush%20--%3E%0A%20%20%3Cellipse%20cx%3D%2268%22%20cy%3D%22118%22%20rx%3D%225%22%20ry%3D%223%22%20fill%3D%22%23F4A0A0%22%20opacity%3D%220.3%22/%3E%0A%20%20%3Cellipse%20cx%3D%2288%22%20cy%3D%22118%22%20rx%3D%225%22%20ry%3D%223%22%20fill%3D%22%23F4A0A0%22%20opacity%3D%220.3%22/%3E%0A%0A%20%20%3C%21--%20Question%20mark%20/%20confused%20lines%20--%3E%0A%20%20%3Ctext%20x%3D%22100%22%20y%3D%22100%22%20font-size%3D%2218%22%20fill%3D%22%23C8A98A%22%20font-family%3D%22serif%22%20opacity%3D%220.8%22%3E%3F%3C/text%3E%0A%20%20%3Cpath%20d%3D%22M105%2082%20Q108%2076%20112%2080%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%3C/svg%3E';
+const ILL_HOMES    = 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20320%20200%22%3E%0A%20%20%3Crect%20width%3D%22320%22%20height%3D%22200%22%20fill%3D%22%23FDF6F0%22/%3E%0A%0A%20%20%3C%21--%20Home%201%20-%20left%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%2830%2C50%29%22%3E%0A%20%20%20%20%3Cpolygon%20points%3D%2240%2C0%2080%2C35%200%2C35%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2210%22%20y%3D%2235%22%20width%3D%2260%22%20height%3D%2255%22%20rx%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.8%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2228%22%20y%3D%2255%22%20width%3D%2224%22%20height%3D%2235%22%20rx%3D%222%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2274%22%20r%3D%222%22%20fill%3D%22%23C8A98A%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2214%22%20y%3D%2242%22%20width%3D%2216%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2250%22%20y%3D%2242%22%20width%3D%2216%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C/g%3E%0A%0A%20%20%3C%21--%20Home%202%20-%20centre%20%28slightly%20larger%2C%20featured%29%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%28118%2C30%29%22%3E%0A%20%20%20%20%3Cpolygon%20points%3D%2242%2C0%2084%2C38%200%2C38%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2210%22%20y%3D%2238%22%20width%3D%2264%22%20height%3D%2260%22%20rx%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2228%22%20y%3D%2260%22%20width%3D%2226%22%20height%3D%2238%22%20rx%3D%222%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2254%22%20cy%3D%2280%22%20r%3D%222.5%22%20fill%3D%22%23C8A98A%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2213%22%20y%3D%2246%22%20width%3D%2217%22%20height%3D%2217%22%20rx%3D%222%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2254%22%20y%3D%2246%22%20width%3D%2217%22%20height%3D%2217%22%20rx%3D%222%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3C%21--%20Chimney%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22-12%22%20width%3D%2210%22%20height%3D%2218%22%20fill%3D%22%23EDE0C8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%20%20%3C%21--%20Smoke%20--%3E%0A%20%20%20%20%3Cpath%20d%3D%22M63%20-14%20Q59%20-20%2063%20-26%20Q67%20-32%2063%20-38%22%20stroke%3D%22%23D4C0A8%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20opacity%3D%220.6%22/%3E%0A%20%20%3C/g%3E%0A%0A%20%20%3C%21--%20Home%203%20-%20right%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%28218%2C50%29%22%3E%0A%20%20%20%20%3Cpolygon%20points%3D%2240%2C0%2080%2C35%200%2C35%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%2398A8C8%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2210%22%20y%3D%2235%22%20width%3D%2260%22%20height%3D%2255%22%20rx%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.8%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2228%22%20y%3D%2255%22%20width%3D%2224%22%20height%3D%2235%22%20rx%3D%222%22%20fill%3D%22%23EDE0C8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2274%22%20r%3D%222%22%20fill%3D%22%23C8A98A%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2214%22%20y%3D%2242%22%20width%3D%2216%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2250%22%20y%3D%2242%22%20width%3D%2216%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C/g%3E%0A%0A%20%20%3C%21--%20Connecting%20dotted%20path%20between%20homes%20--%3E%0A%20%20%3Cpath%20d%3D%22M115%20140%20Q160%20155%20210%20140%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20stroke-dasharray%3D%224%2C3%22%20fill%3D%22none%22%20opacity%3D%220.6%22/%3E%0A%20%20%0A%20%20%3C%21--%20Small%20potli%20bag%20floating%20--%3E%0A%20%20%3Cg%20transform%3D%22translate%28148%2C148%29%22%3E%0A%20%20%20%20%3Cellipse%20cx%3D%2212%22%20cy%3D%2220%22%20rx%3D%2210%22%20ry%3D%228%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%20%20%3Crect%20x%3D%226%22%20y%3D%2212%22%20width%3D%2212%22%20height%3D%228%22%20rx%3D%223%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%20%20%3Cellipse%20cx%3D%228%22%20cy%3D%2210%22%20rx%3D%224%22%20ry%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221%22/%3E%0A%20%20%20%20%3Cellipse%20cx%3D%2216%22%20cy%3D%2210%22%20rx%3D%224%22%20ry%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E';
+
+function OnboardingFlow({ onComplete }) {
+  const [step, setStep]           = useState(0);
+  const [homeCount, setHomeCount] = useState(null);
+  const [homeNames, setHomeNames] = useState(['My Home', 'Parents', '']);
+  const emojis = ['🏠','🌸','💜','🏡','✨'];
+
+  const pickCount = (n) => {
+    setHomeCount(n);
+    const defaults = ['My Home','Parents','In-Laws','Hostel','My Place'];
+    setHomeNames(defaults.slice(0, n));
+  };
+
+  const updateName = (i, v) => {
+    const u = [...homeNames]; u[i] = v; setHomeNames(u);
+  };
+
+  const handleDone = () => {
+    const names = homeNames.map(n => n.trim()).filter(Boolean);
+    onComplete(names.length ? names : ['My Home']);
+  };
+
+  if (step === 0) return (
+    <div style={{ minHeight:'100vh', background:CREAM, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-between', padding:'48px 28px 52px' }}>
+      <div style={{ textAlign:'center' }}>
+        <div style={{ width:52, height:52, borderRadius:16, background:'#1a1816', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto', boxShadow:'0 4px 16px rgba(26,24,22,0.16)' }}>
+          <span style={{ fontSize:26, lineHeight:1 }}>👜</span>
+        </div>
+      </div>
+
+      <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', width:'100%', padding:'20px 0' }}>
+        <img src={ILL_WARDROBE} alt="" style={{ width:'100%', maxWidth:300, height:'auto' }}/>
+      </div>
+
+      <div style={{ width:'100%', maxWidth:400 }}>
+        <h1 className="serif" style={{ fontSize:27, fontWeight:600, color:'#1a1816', margin:'0 0 12px', lineHeight:1.3, letterSpacing:'-0.3px' }}>
+          Ever visited family and realised you left half your clothes behind?
+        </h1>
+        <p style={{ fontSize:15, color:'#1a1816', fontWeight:600, margin:'0 0 8px' }}>Potli fixes that.</p>
+        <p style={{ fontSize:14, color:'#a8a29e', margin:'0 0 28px', lineHeight:1.65 }}>
+          Know exactly what's at home, at your parents', hostel, in-laws, wherever — so you always pack right.
+        </p>
+        <button onClick={() => setStep(1)} style={{ ...btnReset, width:'100%', padding:'16px', borderRadius:16, background:'#1a1816', color:'#f5f3ef', fontSize:15, fontWeight:600, justifyContent:'center', cursor:'pointer' }}>
+          Let's set it up →
+        </button>
+        <p style={{ fontSize:11, color:'#c4b8a8', textAlign:'center', marginTop:14 }}>Takes less than a minute</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ minHeight:'100vh', background:CREAM, display:'flex', flexDirection:'column', padding:'48px 28px 52px' }}>
+      <div style={{ textAlign:'center', marginBottom:24 }}>
+        <img src={ILL_HOMES} alt="" style={{ width:'100%', maxWidth:280, height:'auto', margin:'0 auto', display:'block' }}/>
+      </div>
+
+      <h2 className="serif" style={{ fontSize:26, fontWeight:600, color:'#1a1816', margin:'0 0 6px', letterSpacing:'-0.2px' }}>
+        How many homes?
+      </h2>
+      <p style={{ fontSize:14, color:'#a8a29e', margin:'0 0 22px', lineHeight:1.5 }}>
+        How many places do you keep clothes at?
+      </p>
+
+      <div style={{ display:'flex', gap:10, marginBottom:24 }}>
+        {[2,3,4,5].map(n => (
+          <button key={n} onClick={() => pickCount(n)} style={{
+            ...btnReset, flex:1, padding:'14px 0', borderRadius:14, cursor:'pointer',
+            fontSize:18, fontWeight:600, transition:'all .15s',
+            background: homeCount===n ? '#1a1816' : CARD,
+            color: homeCount===n ? '#f5f3ef' : '#5c5652',
+            boxShadow: homeCount===n ? '0 2px 10px rgba(26,24,22,0.18)' : '0 1px 4px rgba(44,42,38,0.08)',
+          }}>
+            {n}
+          </button>
+        ))}
+      </div>
+
+      {homeCount && (
+        <div className="fade-up" style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:28 }}>
+          {homeNames.map((name, i) => (
+            <div key={i} style={{ display:'flex', alignItems:'center', gap:12, background:CARD, borderRadius:14, padding:'13px 16px', boxShadow:'0 1px 4px rgba(44,42,38,0.07)' }}>
+              <span style={{ fontSize:22, flexShrink:0 }}>{emojis[i % emojis.length]}</span>
+              <input
+                value={name}
+                onChange={e => updateName(i, e.target.value)}
+                placeholder={`Home ${i+1} name`}
+                style={{ flex:1, border:'none', outline:'none', fontSize:14, fontWeight:500, color:'#1a1816', background:'transparent' }}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ marginTop:'auto' }}>
+        <button onClick={handleDone} disabled={!homeCount} style={{
+          ...btnReset, width:'100%', padding:'16px', borderRadius:16, cursor:homeCount?'pointer':'not-allowed',
+          background: homeCount ? '#1a1816' : '#e0d8cf',
+          color: homeCount ? '#f5f3ef' : '#a8a29e',
+          fontSize:15, fontWeight:600, justifyContent:'center', transition:'all .15s',
+        }}>
+          Take me in →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── DEFERRED SIGN-UP SHEET ────────────────────────────────────────────────────
+function SignUpSheet({ onAuth, onSkip }) {
+  const [name, setName]         = useState('');
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
+  const [error, setError]       = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const inp = {
+    width:'100%', padding:'12px 14px', background:CREAM,
+    border:'1px solid rgba(44,42,38,0.12)', borderRadius:12,
+    fontSize:14, color:'#1a1816', outline:'none', boxSizing:'border-box',
+  };
+
+  const handleSubmit = async () => {
+    setError('');
+    if (!email.trim() || !password.trim() || !name.trim()) { setError('Please fill in all fields.'); return; }
+    if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
+    setSubmitting(true);
+    try {
+      const { data, error: err } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(), password,
+        options: { data: { name: name.trim() } }
+      });
+      if (err) { setError(err.message); setSubmitting(false); return; }
+      if (data.user) onAuth({ id: data.user.id, email: data.user.email, name: name.trim() });
+    } catch(e) { setError('Something went wrong. Try again.'); }
+    setSubmitting(false);
+  };
+
+  return (
+    <div style={{ position:'fixed', inset:0, background:'rgba(26,24,22,0.45)', backdropFilter:'blur(4px)', display:'flex', alignItems:'flex-end', justifyContent:'center', zIndex:60 }}>
+      <div style={{ background:CARD, width:'100%', maxWidth:560, borderRadius:'26px 26px 0 0', padding:'24px 22px 36px' }}>
+        <div style={{ textAlign:'center', marginBottom:20 }}>
+          <div style={{ fontSize:28, marginBottom:8 }}>☁️</div>
+          <h2 className="serif" style={{ fontSize:20, fontWeight:600, color:'#1a1816', margin:'0 0 4px' }}>Save your Potli</h2>
+          <p style={{ fontSize:13, color:'#a8a29e', margin:0 }}>Sync your wardrobe across all your devices</p>
+        </div>
+
+        <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:14 }}>
+          <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={inp}/>
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email address" style={inp}/>
+          <div style={{ position:'relative' }}>
+            <input type={showPass?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)}
+              placeholder="Password (min. 6 chars)" style={{...inp, paddingRight:44}}
+              onKeyDown={e=>{if(e.key==='Enter')handleSubmit();}}/>
+            <button onClick={()=>setShowPass(p=>!p)}
+              style={{...btnReset,position:'absolute',right:12,top:'50%',transform:'translateY(-50%)',color:'#a8a29e',cursor:'pointer'}}>
+              <Eye size={15} strokeWidth={1.8}/>
+            </button>
+          </div>
+          {error && <div style={{fontSize:12,color:'#c0392b',background:'#fef2f2',border:'1px solid #fecaca',borderRadius:10,padding:'8px 12px'}}>{error}</div>}
+        </div>
+
+        <button onClick={handleSubmit} disabled={submitting} style={{
+          ...btnReset, width:'100%', padding:'15px', borderRadius:14, cursor:submitting?'not-allowed':'pointer',
+          background:submitting?'#d6cfc6':'#1a1816', color:'#f5f3ef',
+          fontSize:14, fontWeight:600, justifyContent:'center', marginBottom:10,
+        }}>
+          {submitting ? '…' : 'Create Account & Save'}
+        </button>
+
+        <button onClick={onSkip} style={{
+          ...btnReset, width:'100%', padding:'12px', borderRadius:14, cursor:'pointer',
+          color:'#a8a29e', fontSize:13, fontWeight:500, justifyContent:'center',
+        }}>
+          Maybe later — save on this device only
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
 // ─── AUTH SCREEN (Supabase) ───────────────────────────────────────────────────
 function AuthScreen({ onAuth }) {
   const [mode, setMode]         = useState('signin');
@@ -315,64 +506,29 @@ const SEEDS = [
 ];
 
 // ─── SVG ILLUSTRATIONS ────────────────────────────────────────────────────────
+const CLOTH_ILLUSTRATIONS = {
+  'Kurta': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Hanger%20--%3E%0A%20%20%3Cpath%20d%3D%22M50%2012%20L50%2020%20M44%2020%20L56%2020%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M38%2020%20Q50%2016%2062%2020%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22/%3E%0A%20%20%3C%21--%20Kurta%20body%20--%3E%0A%20%20%3Cpath%20d%3D%22M32%2022%20L38%2020%20L38%2028%20L62%2028%20L62%2020%20L68%2022%20L70%2040%20L64%2040%20L64%2088%20L36%2088%20L36%2040%20L30%2040%20Z%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221.5%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%3C%21--%20Neckline%20--%3E%0A%20%20%3Cpath%20d%3D%22M44%2028%20Q50%2034%2056%2028%22%20fill%3D%22none%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Button%20line%20--%3E%0A%20%20%3Cline%20x1%3D%2250%22%20y1%3D%2234%22%20x2%3D%2250%22%20y2%3D%2270%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%220.8%22%20stroke-dasharray%3D%222%2C3%22/%3E%0A%20%20%3C%21--%20Cuffs%20--%3E%0A%20%20%3Crect%20x%3D%2230%22%20y%3D%2236%22%20width%3D%228%22%20height%3D%226%22%20rx%3D%222%22%20fill%3D%22%23B0C8A8%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221%22/%3E%0A%20%20%3Crect%20x%3D%2262%22%20y%3D%2236%22%20width%3D%228%22%20height%3D%226%22%20rx%3D%222%22%20fill%3D%22%23B0C8A8%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221%22/%3E%0A%3C/svg%3E`,
+  'Saree': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Folded%20saree%20stack%20--%3E%0A%20%20%3Crect%20x%3D%2220%22%20y%3D%2255%22%20width%3D%2260%22%20height%3D%228%22%20rx%3D%222%22%20fill%3D%22%23E8B4B0%22%20stroke%3D%22%23C89090%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3Crect%20x%3D%2222%22%20y%3D%2247%22%20width%3D%2256%22%20height%3D%2210%22%20rx%3D%222%22%20fill%3D%22%23F4C5C0%22%20stroke%3D%22%23D4A09A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3Crect%20x%3D%2224%22%20y%3D%2238%22%20width%3D%2252%22%20height%3D%2211%22%20rx%3D%222%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3Crect%20x%3D%2222%22%20y%3D%2229%22%20width%3D%2256%22%20height%3D%2211%22%20rx%3D%222%22%20fill%3D%22%23F4C5C0%22%20stroke%3D%22%23D4A09A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Border%20detail%20on%20top%20fold%20--%3E%0A%20%20%3Crect%20x%3D%2224%22%20y%3D%2229%22%20width%3D%2252%22%20height%3D%223%22%20rx%3D%221%22%20fill%3D%22%23E8A8A0%22%20stroke%3D%22none%22/%3E%0A%20%20%3Crect%20x%3D%2224%22%20y%3D%2237%22%20width%3D%2252%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23E8A8A0%22%20stroke%3D%22none%22/%3E%0A%20%20%3C%21--%20Decorative%20dots%20--%3E%0A%20%20%3Ccircle%20cx%3D%2235%22%20cy%3D%2234%22%20r%3D%221.5%22%20fill%3D%22%23C88080%22%20opacity%3D%220.6%22/%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2234%22%20r%3D%221.5%22%20fill%3D%22%23C88080%22%20opacity%3D%220.6%22/%3E%0A%20%20%3Ccircle%20cx%3D%2265%22%20cy%3D%2234%22%20r%3D%221.5%22%20fill%3D%22%23C88080%22%20opacity%3D%220.6%22/%3E%0A%20%20%3C%21--%20Pleats%20suggestion%20--%3E%0A%20%20%3Cpath%20d%3D%22M20%2065%20Q50%2070%2080%2065%22%20stroke%3D%22%23C89090%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20opacity%3D%220.5%22/%3E%0A%20%20%3C%21--%20Label%20--%3E%0A%20%20%3Ctext%20x%3D%2250%22%20y%3D%2280%22%20font-size%3D%227%22%20fill%3D%22%23C8A98A%22%20text-anchor%3D%22middle%22%20font-family%3D%22serif%22%20font-style%3D%22italic%22%3Esaree%3C/text%3E%0A%3C/svg%3E`,
+  'Jeans': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Jeans%20waistband%20--%3E%0A%20%20%3Crect%20x%3D%2225%22%20y%3D%2218%22%20width%3D%2250%22%20height%3D%2210%22%20rx%3D%223%22%20fill%3D%22%238A9EC0%22%20stroke%3D%22%237080A8%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Belt%20loops%20--%3E%0A%20%20%3Crect%20x%3D%2233%22%20y%3D%2216%22%20width%3D%224%22%20height%3D%2214%22%20rx%3D%221%22%20fill%3D%22%237080A8%22%20stroke%3D%22none%22/%3E%0A%20%20%3Crect%20x%3D%2263%22%20y%3D%2216%22%20width%3D%224%22%20height%3D%2214%22%20rx%3D%221%22%20fill%3D%22%237080A8%22%20stroke%3D%22none%22/%3E%0A%20%20%3Crect%20x%3D%2248%22%20y%3D%2216%22%20width%3D%224%22%20height%3D%226%22%20rx%3D%221%22%20fill%3D%22%237080A8%22%20stroke%3D%22none%22/%3E%0A%20%20%3C%21--%20Jeans%20legs%20--%3E%0A%20%20%3Cpath%20d%3D%22M25%2028%20L30%2082%20L48%2082%20L50%2055%20L52%2082%20L70%2082%20L75%2028%20Z%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%238A9EC0%22%20stroke-width%3D%221.5%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%3C%21--%20Seam%20line%20down%20centre%20--%3E%0A%20%20%3Cline%20x1%3D%2250%22%20y1%3D%2228%22%20x2%3D%2250%22%20y2%3D%2255%22%20stroke%3D%22%238A9EC0%22%20stroke-width%3D%221%22%20stroke-dasharray%3D%222%2C2%22/%3E%0A%20%20%3C%21--%20Pocket%20stitching%20--%3E%0A%20%20%3Cpath%20d%3D%22M30%2032%20Q38%2036%2036%2044%22%20stroke%3D%22%238A9EC0%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M70%2032%20Q62%2036%2064%2044%22%20stroke%3D%22%238A9EC0%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3C%21--%20Cuff%20hems%20--%3E%0A%20%20%3Cline%20x1%3D%2230%22%20y1%3D%2278%22%20x2%3D%2248%22%20y2%3D%2278%22%20stroke%3D%22%238A9EC0%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3Cline%20x1%3D%2252%22%20y1%3D%2278%22%20x2%3D%2270%22%20y2%3D%2278%22%20stroke%3D%22%238A9EC0%22%20stroke-width%3D%221.5%22/%3E%0A%3C/svg%3E`,
+  'Blazer': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Hanger%20--%3E%0A%20%20%3Cpath%20d%3D%22M50%2010%20L50%2018%20M44%2018%20L56%2018%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M38%2018%20Q50%2014%2062%2018%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22/%3E%0A%20%20%3C%21--%20Blazer%20body%20--%3E%0A%20%20%3Cpath%20d%3D%22M28%2022%20L38%2018%20L44%2028%20L50%2024%20L56%2028%20L62%2018%20L72%2022%20L74%2085%20L26%2085%20Z%22%20fill%3D%22%238A9EB8%22%20stroke%3D%22%236A7E98%22%20stroke-width%3D%221.5%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%3C%21--%20Lapels%20--%3E%0A%20%20%3Cpath%20d%3D%22M38%2018%20L44%2028%20L50%2024%22%20fill%3D%22%237A8EA8%22%20stroke%3D%22%236A7E98%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M62%2018%20L56%2028%20L50%2024%22%20fill%3D%22%237A8EA8%22%20stroke%3D%22%236A7E98%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%3C%21--%20Button%20--%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2252%22%20r%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221%22/%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2264%22%20r%3D%223%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C%21--%20Pocket%20--%3E%0A%20%20%3Crect%20x%3D%2230%22%20y%3D%2260%22%20width%3D%2214%22%20height%3D%223%22%20rx%3D%221%22%20fill%3D%22%237A8EA8%22%20stroke%3D%22%236A7E98%22%20stroke-width%3D%220.8%22/%3E%0A%20%20%3C%21--%20Sleeve%20cuffs%20--%3E%0A%20%20%3Crect%20x%3D%2226%22%20y%3D%2274%22%20width%3D%2212%22%20height%3D%225%22%20rx%3D%222%22%20fill%3D%22%237A8EA8%22%20stroke%3D%22%236A7E98%22%20stroke-width%3D%221%22/%3E%0A%20%20%3Crect%20x%3D%2262%22%20y%3D%2274%22%20width%3D%2212%22%20height%3D%225%22%20rx%3D%222%22%20fill%3D%22%237A8EA8%22%20stroke%3D%22%236A7E98%22%20stroke-width%3D%221%22/%3E%0A%3C/svg%3E`,
+  'Sandals': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Sandal%20pair%20-%20slightly%20offset%20--%3E%0A%20%20%3C%21--%20Back%20sandal%20%28shadow%29%20--%3E%0A%20%20%3Cellipse%20cx%3D%2255%22%20cy%3D%2265%22%20rx%3D%2228%22%20ry%3D%229%22%20fill%3D%22%23D4C0A8%22%20stroke%3D%22none%22/%3E%0A%20%20%3C%21--%20Front%20sandal%20sole%20--%3E%0A%20%20%3Cellipse%20cx%3D%2248%22%20cy%3D%2262%22%20rx%3D%2228%22%20ry%3D%229%22%20fill%3D%22%23C8A878%22%20stroke%3D%22%23A88858%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Sandal%20straps%20--%3E%0A%20%20%3Cpath%20d%3D%22M24%2058%20Q36%2050%2048%2054%22%20stroke%3D%22%23A88858%22%20stroke-width%3D%223%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M48%2054%20Q60%2050%2072%2056%22%20stroke%3D%22%23A88858%22%20stroke-width%3D%223%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3C%21--%20Toe%20strap%20--%3E%0A%20%20%3Cpath%20d%3D%22M42%2054%20Q48%2048%2054%2054%22%20stroke%3D%22%23A88858%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3C%21--%20Buckle%20--%3E%0A%20%20%3Crect%20x%3D%2230%22%20y%3D%2252%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221%22%20fill%3D%22%238B6A40%22%20stroke%3D%22%236A4820%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C%21--%20Heel%20of%20back%20sandal%20--%3E%0A%20%20%3Cellipse%20cx%3D%2258%22%20cy%3D%2265%22%20rx%3D%226%22%20ry%3D%223%22%20fill%3D%22%23B89868%22%20stroke%3D%22%23A88858%22%20stroke-width%3D%221%22/%3E%0A%3C/svg%3E`,
+  'Lehenga': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Skirt%20%28big%20flared%20bottom%29%20--%3E%0A%20%20%3Cpath%20d%3D%22M36%2038%20Q10%2055%208%2085%20L92%2085%20Q90%2055%2064%2038%20Z%22%20fill%3D%22%23C8D9C0%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Skirt%20border%20--%3E%0A%20%20%3Cpath%20d%3D%22M8%2085%20Q50%2080%2092%2085%22%20stroke%3D%22%23A0B898%22%20stroke-width%3D%222%22/%3E%0A%20%20%3Cpath%20d%3D%22M9%2080%20Q50%2076%2091%2080%22%20stroke%3D%22%23C8E0B8%22%20stroke-width%3D%221.5%22%20opacity%3D%220.7%22/%3E%0A%20%20%3C%21--%20Waistband%20--%3E%0A%20%20%3Crect%20x%3D%2230%22%20y%3D%2230%22%20width%3D%2240%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23A0B898%22%20stroke%3D%22%2388A080%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Embroidery%20dots%20on%20skirt%20--%3E%0A%20%20%3Ccircle%20cx%3D%2230%22%20cy%3D%2258%22%20r%3D%222%22%20fill%3D%22%23F9D4C8%22%20opacity%3D%220.8%22/%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2252%22%20r%3D%222%22%20fill%3D%22%23F9D4C8%22%20opacity%3D%220.8%22/%3E%0A%20%20%3Ccircle%20cx%3D%2270%22%20cy%3D%2258%22%20r%3D%222%22%20fill%3D%22%23F9D4C8%22%20opacity%3D%220.8%22/%3E%0A%20%20%3Ccircle%20cx%3D%2240%22%20cy%3D%2268%22%20r%3D%221.5%22%20fill%3D%22%23F4C5C0%22%20opacity%3D%220.8%22/%3E%0A%20%20%3Ccircle%20cx%3D%2260%22%20cy%3D%2268%22%20r%3D%221.5%22%20fill%3D%22%23F4C5C0%22%20opacity%3D%220.8%22/%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2274%22%20r%3D%221.5%22%20fill%3D%22%23F4C5C0%22%20opacity%3D%220.8%22/%3E%0A%20%20%3C%21--%20Dupatta%20hint%20--%3E%0A%20%20%3Cpath%20d%3D%22M20%2028%20Q50%2020%2080%2028%22%20stroke%3D%22%23F9D4C8%22%20stroke-width%3D%223%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20opacity%3D%220.7%22/%3E%0A%3C/svg%3E`,
+  'T-Shirt': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Hanger%20--%3E%0A%20%20%3Cpath%20d%3D%22M50%2010%20L50%2018%20M44%2018%20L56%2018%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M38%2018%20Q50%2014%2062%2018%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22/%3E%0A%20%20%3C%21--%20T-shirt%20body%20--%3E%0A%20%20%3Cpath%20d%3D%22M28%2022%20L38%2018%20L38%2028%20L62%2028%20L62%2018%20L72%2022%20L68%2042%20L64%2042%20L64%2085%20L36%2085%20L36%2042%20L32%2042%20Z%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.5%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%3C%21--%20Neckline%20--%3E%0A%20%20%3Cpath%20d%3D%22M42%2028%20Q50%2034%2058%2028%22%20fill%3D%22none%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Sleeve%20detail%20--%3E%0A%20%20%3Cline%20x1%3D%2232%22%20y1%3D%2238%22%20x2%3D%2238%22%20y2%3D%2238%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221%22/%3E%0A%20%20%3Cline%20x1%3D%2262%22%20y1%3D%2238%22%20x2%3D%2268%22%20y2%3D%2238%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221%22/%3E%0A%3C/svg%3E`,
+  'Hoodie': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Hoodie%20body%20--%3E%0A%20%20%3Cpath%20d%3D%22M26%2028%20L36%2020%20L40%2030%20L60%2030%20L64%2020%20L74%2028%20L72%2085%20L28%2085%20Z%22%20fill%3D%22%23D4D0C8%22%20stroke%3D%22%23B0ACA0%22%20stroke-width%3D%221.5%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%3C%21--%20Hood%20--%3E%0A%20%20%3Cpath%20d%3D%22M36%2020%20Q50%2010%2064%2020%20Q62%2028%2050%2026%20Q38%2028%2036%2020%20Z%22%20fill%3D%22%23C8C4BC%22%20stroke%3D%22%23B0ACA0%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Front%20pocket%20--%3E%0A%20%20%3Cpath%20d%3D%22M36%2062%20Q50%2065%2064%2062%20L64%2078%20Q50%2080%2036%2078%20Z%22%20fill%3D%22%23C0BCA8%22%20stroke%3D%22%23B0ACA0%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Zip%20--%3E%0A%20%20%3Cline%20x1%3D%2250%22%20y1%3D%2230%22%20x2%3D%2250%22%20y2%3D%2262%22%20stroke%3D%22%23989490%22%20stroke-width%3D%221.5%22%20stroke-dasharray%3D%223%2C2%22/%3E%0A%20%20%3C%21--%20Cuffs%20--%3E%0A%20%20%3Crect%20x%3D%2227%22%20y%3D%2278%22%20width%3D%2210%22%20height%3D%226%22%20rx%3D%223%22%20fill%3D%22%23C0BCA8%22%20stroke%3D%22%23B0ACA0%22%20stroke-width%3D%221%22/%3E%0A%20%20%3Crect%20x%3D%2263%22%20y%3D%2278%22%20width%3D%2210%22%20height%3D%226%22%20rx%3D%223%22%20fill%3D%22%23C0BCA8%22%20stroke%3D%22%23B0ACA0%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C%21--%20Hem%20--%3E%0A%20%20%3Crect%20x%3D%2228%22%20y%3D%2282%22%20width%3D%2244%22%20height%3D%224%22%20rx%3D%222%22%20fill%3D%22%23C0BCA8%22%20stroke%3D%22%23B0ACA0%22%20stroke-width%3D%221%22/%3E%0A%3C/svg%3E`,
+  'Sneakers': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Sole%20--%3E%0A%20%20%3Cpath%20d%3D%22M12%2072%20Q15%2080%2085%2078%20L88%2068%20Q80%2065%2012%2068%20Z%22%20fill%3D%22%23E8E0D8%22%20stroke%3D%22%23C8C0B8%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Shoe%20body%20--%3E%0A%20%20%3Cpath%20d%3D%22M14%2068%20L22%2045%20Q35%2038%2050%2040%20Q70%2040%2080%2052%20L85%2068%20Z%22%20fill%3D%22%23F5EDD8%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Toe%20box%20--%3E%0A%20%20%3Cellipse%20cx%3D%2222%22%20cy%3D%2258%22%20rx%3D%2210%22%20ry%3D%228%22%20fill%3D%22%23F9F4EC%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Laces%20--%3E%0A%20%20%3Cpath%20d%3D%22M38%2048%20L42%2054%20M46%2046%20L48%2052%20M54%2046%20L54%2052%22%20stroke%3D%22%23C8A98A%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M38%2048%20L54%2046%20M42%2054%20L48%2052%22%20stroke%3D%22%23D4B898%22%20stroke-width%3D%221%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3C%21--%20Logo%20strip%20--%3E%0A%20%20%3Cpath%20d%3D%22M65%2055%20Q75%2052%2082%2058%22%20stroke%3D%22%23C8D9C0%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3C%21--%20Heel%20tab%20--%3E%0A%20%20%3Crect%20x%3D%2276%22%20y%3D%2256%22%20width%3D%228%22%20height%3D%2212%22%20rx%3D%223%22%20fill%3D%22%23F9D4C8%22%20stroke%3D%22%23D4A898%22%20stroke-width%3D%221%22/%3E%0A%3C/svg%3E`,
+  'Pajamas': `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23FBF6F0%22/%3E%0A%20%20%3C%21--%20Top%20--%3E%0A%20%20%3Cpath%20d%3D%22M24%2012%20L34%208%20L34%2016%20L66%2016%20L66%208%20L76%2012%20L74%2036%20L70%2036%20L70%2052%20L30%2052%20L30%2036%20L26%2036%20Z%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%238A9EC0%22%20stroke-width%3D%221.5%22%20stroke-linejoin%3D%22round%22/%3E%0A%20%20%3C%21--%20Neckline%20--%3E%0A%20%20%3Cpath%20d%3D%22M40%2016%20Q50%2022%2060%2016%22%20fill%3D%22none%22%20stroke%3D%22%238A9EC0%22%20stroke-width%3D%221.2%22/%3E%0A%20%20%3C%21--%20Stars%20pattern%20on%20top%20--%3E%0A%20%20%3Ctext%20x%3D%2242%22%20y%3D%2236%22%20font-size%3D%228%22%20fill%3D%22%238A9EC0%22%20opacity%3D%220.6%22%3E%E2%98%85%3C/text%3E%0A%20%20%3Ctext%20x%3D%2254%22%20y%3D%2244%22%20font-size%3D%226%22%20fill%3D%22%238A9EC0%22%20opacity%3D%220.5%22%3E%E2%98%85%3C/text%3E%0A%20%20%3C%21--%20Pants%20--%3E%0A%20%20%3Cpath%20d%3D%22M30%2056%20L34%2094%20L48%2094%20L50%2075%20L52%2094%20L66%2094%20L70%2056%20Z%22%20fill%3D%22%23B8C8E0%22%20stroke%3D%22%238A9EC0%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Waistband%20--%3E%0A%20%20%3Crect%20x%3D%2230%22%20y%3D%2252%22%20width%3D%2240%22%20height%3D%226%22%20rx%3D%222%22%20fill%3D%22%238A9EC0%22%20stroke%3D%22%236A7E98%22%20stroke-width%3D%221%22/%3E%0A%20%20%3C%21--%20Stars%20on%20pants%20--%3E%0A%20%20%3Ctext%20x%3D%2234%22%20y%3D%2278%22%20font-size%3D%227%22%20fill%3D%22%238A9EC0%22%20opacity%3D%220.5%22%3E%E2%98%85%3C/text%3E%0A%20%20%3Ctext%20x%3D%2257%22%20y%3D%2272%22%20font-size%3D%227%22%20fill%3D%22%238A9EC0%22%20opacity%3D%220.5%22%3E%E2%98%85%3C/text%3E%0A%3C/svg%3E`
+};
+
 const makeClothSvg = (type, color) => {
+  if (CLOTH_ILLUSTRATIONS[type]) return CLOTH_ILLUSTRATIONS[type];
   const colorMap = {
     'White':'#F5F3EF','Black':'#2C2A26','Blue':'#5B7CA3','Red':'#B85450','Green':'#7A8B6F',
     'Yellow':'#D4A85C','Pink':'#D89AAB','Navy':'#3A4A66','Grey':'#9C9A95','Brown':'#7A5C42',
     'Maroon':'#7A3838','Beige':'#D4C5A0','Floral':'#E0A8B5','Light blue':'#A8C0D4','Mixed':'#B5A8C0',
   };
-  const c = colorMap[color] || '#9C9A95';
-  const s = 'rgba(44,42,38,0.35)'; const w = '0.8';
-  const shapes = {
-    'Kurta':`<path d="M30 30 L40 25 L60 25 L70 30 L75 50 L75 95 L25 95 L25 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/><line x1="50" y1="25" x2="50" y2="50" stroke="${s}" stroke-width="0.4"/>`,
-    'Kurti':`<path d="M30 30 L40 25 L60 25 L70 30 L73 50 L70 80 L30 80 L27 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Saree':`<path d="M20 20 Q50 10 80 20 L85 50 Q70 70 75 95 L25 95 Q30 70 15 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Lehenga':`<path d="M35 20 L65 20 L70 50 L85 95 L15 95 L30 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Salwar Suit':`<path d="M30 25 L70 25 L75 60 L60 95 L40 95 L25 60 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Dupatta':`<path d="M15 30 Q50 20 85 30 L80 70 Q50 60 20 70 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'T-Shirt':`<path d="M25 30 L40 22 L40 30 L60 30 L60 22 L75 30 L70 45 L65 45 L65 90 L35 90 L35 45 L30 45 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Shirt':`<path d="M25 28 L40 22 L40 32 L60 32 L60 22 L75 28 L72 45 L68 45 L68 92 L32 92 L32 45 L28 45 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/><line x1="50" y1="32" x2="50" y2="92" stroke="${s}" stroke-width="0.4"/>`,
-    'Blouse':`<path d="M28 28 L40 22 L40 30 L60 30 L60 22 L72 28 L70 50 L65 50 L65 85 L35 85 L35 50 L30 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Hoodie':`<path d="M25 35 L35 22 L40 30 L60 30 L65 22 L75 35 L72 90 L28 90 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/><path d="M40 30 Q50 20 60 30" stroke="${s}" stroke-width="0.5" fill="none"/>`,
-    'Sweater':`<path d="M25 30 L40 25 L40 30 L60 30 L60 25 L75 30 L72 88 L28 88 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Tank Top':`<path d="M35 25 L40 25 L42 32 L58 32 L60 25 L65 25 L65 90 L35 90 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Jeans':`<path d="M35 20 L65 20 L67 50 L62 95 L52 95 L50 60 L48 60 L46 95 L36 95 L33 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Trousers':`<path d="M35 22 L65 22 L66 50 L60 92 L52 92 L50 55 L48 55 L46 92 L38 92 L34 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Shorts':`<path d="M35 25 L65 25 L66 40 L62 65 L52 65 L50 45 L48 45 L46 65 L36 65 L34 40 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Leggings':`<path d="M38 22 L62 22 L63 50 L58 95 L52 95 L51 55 L49 55 L48 95 L42 95 L37 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Track Pants':`<path d="M36 22 L64 22 L66 50 L60 92 L52 92 L50 55 L48 55 L46 92 L38 92 L34 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'One Piece':`<path d="M30 25 L40 22 L40 30 L60 30 L60 22 L70 25 L72 50 L78 95 L22 95 L28 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Maxi Dress':`<path d="M32 25 L40 22 L40 30 L60 30 L60 22 L68 25 L70 50 L82 95 L18 95 L30 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Midi Dress':`<path d="M30 25 L40 22 L40 30 L60 30 L60 22 L70 25 L72 45 L75 80 L25 80 L28 45 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Gown':`<path d="M30 22 L40 20 L40 30 L60 30 L60 20 L70 22 L72 50 L85 95 L15 95 L28 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Bra':`<path d="M18 45 Q32 38 36 52 Q36 62 24 62 L18 45 Z M82 45 Q68 38 64 52 Q64 62 76 62 L82 45 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Panties':`<path d="M28 35 L72 35 L70 55 Q60 70 50 65 Q40 70 30 55 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Boxers':`<path d="M30 30 L70 30 L72 60 L60 75 L52 60 L48 60 L40 75 L28 60 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Briefs':`<path d="M28 35 L72 35 L72 50 Q60 65 50 60 Q40 65 28 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Vest':`<path d="M35 25 L40 25 L42 32 L58 32 L60 25 L65 25 L65 75 L35 75 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Camisole':`<path d="M37 25 L42 25 L43 32 L57 32 L58 25 L63 25 L63 80 L37 80 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Pajamas':`<g><path d="M22 20 L35 17 L35 25 L55 25 L55 17 L68 20 L65 50 L25 50 Z" fill="${c}" stroke="${s}" stroke-width="0.7"/><path d="M30 55 L60 55 L62 75 L57 95 L50 95 L48 70 L46 70 L44 95 L37 95 L33 75 Z" fill="${c}" stroke="${s}" stroke-width="0.7"/></g>`,
-    'Night Suit':`<g><path d="M22 20 L35 17 L35 25 L55 25 L55 17 L68 20 L65 50 L25 50 Z" fill="${c}" stroke="${s}" stroke-width="0.7"/><path d="M30 55 L60 55 L62 75 L57 95 L50 95 L48 70 L46 70 L44 95 L37 95 L33 75 Z" fill="${c}" stroke="${s}" stroke-width="0.7"/></g>`,
-    'Nightie':`<path d="M32 25 L40 22 L40 30 L60 30 L60 22 L68 25 L72 50 L80 95 L20 95 L28 50 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Jacket':`<path d="M22 28 L38 22 L40 32 L60 32 L62 22 L78 28 L75 90 L25 90 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Coat':`<path d="M20 28 L38 22 L40 32 L60 32 L62 22 L80 28 L78 95 L22 95 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Blazer':`<path d="M22 28 L38 22 L42 35 L50 40 L58 35 L62 22 L78 28 L75 90 L25 90 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Cardigan':`<path d="M25 28 L38 22 L40 32 L60 32 L62 22 L75 28 L72 88 L28 88 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Shawl':`<path d="M15 35 Q50 25 85 35 L80 65 Q50 55 20 65 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Scarf':`<path d="M20 40 L80 40 L78 55 L22 55 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Belt':`<rect x="15" y="45" width="70" height="10" fill="${c}" stroke="${s}" stroke-width="${w}"/><rect x="58" y="42" width="12" height="16" fill="#C9A961" stroke="${s}" stroke-width="0.5"/>`,
-    'Tie':`<path d="M40 20 L60 20 L55 35 L62 80 L50 95 L38 80 L45 35 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Socks':`<path d="M35 20 L55 20 L55 60 Q55 75 70 75 L70 85 L40 85 Q30 85 30 70 L30 30 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Shoes':`<path d="M15 60 L25 50 L55 55 Q75 55 80 65 L80 75 L15 75 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Sandals':`<path d="M20 62 L78 62 L75 74 L25 74 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/><path d="M30 62 L40 46 L60 46 L70 62" stroke="${s}" stroke-width="${w}" fill="none"/>`,
-    'Heels':`<path d="M20 60 L25 50 L60 55 L75 60 L75 70 L65 70 L20 70 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/><line x1="65" y1="70" x2="68" y2="90" stroke="${s}" stroke-width="1"/>`,
-    'Sneakers':`<path d="M15 60 L30 48 L55 52 Q78 55 82 68 L82 75 L15 75 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Flats':`<path d="M18 60 L30 55 L70 58 L80 65 L80 72 L18 72 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Dhoti':`<path d="M25 25 L75 25 L78 60 L60 95 L40 95 L22 60 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/>`,
-    'Sherwani':`<path d="M28 25 L40 20 L40 30 L60 30 L60 20 L72 25 L75 95 L25 95 Z" fill="${c}" stroke="${s}" stroke-width="${w}"/><line x1="50" y1="30" x2="50" y2="95" stroke="${s}" stroke-width="0.5"/>`,
-  };
-  const shape = shapes[type] || `<rect x="25" y="25" width="50" height="65" fill="${c}" stroke="${s}" stroke-width="${w}" rx="3"/>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F5F3EF"/>${shape}</svg>`)}`;
+  const c = colorMap[color] || '#C8D9C0';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FBF6F0"/><rect x="25" y="25" width="50" height="65" fill="${c}" stroke="rgba(44,42,38,0.2)" stroke-width="0.8" rx="4"/></svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 };
 
 // ─── SETTINGS SUB-PAGES (proper React components with their own state) ─────────
@@ -556,6 +712,10 @@ function WardrobeTracker() {
   const [analyzeError, setAnalyzeError] = useState('');
   const [addStep, setAddStep]         = useState(0); // 0=type, 1=details, 2=home, 3=summary
   const fileInputRef = useRef(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showSignUpSheet, setShowSignUpSheet] = useState(false);
+  const [pendingSave, setPendingSave]       = useState(null);
+  const [coachDismissed, setCoachDismissed] = useState(false);
 
   // ── Supabase auth — single source of truth ────────────────────────────────
   useEffect(() => {
@@ -578,7 +738,13 @@ function WardrobeTracker() {
 
   useEffect(() => {
     if (session) { setLoading(true); loadAll(); }
-  }, [session?.id]); // only re-run when user actually changes
+  }, [session?.id]);
+
+  useEffect(() => {
+    if (!sessionChecked) return;
+    const done = localStorage.getItem('potli-onboarded');
+    if (!done && !session) setShowOnboarding(true);
+  }, [sessionChecked]);
 
   // ── Photo helpers — stored locally by user+id ──────────────────────────────
   const photoKey  = (id) => `potli-photo-${session?.id}-${id}`;
@@ -741,6 +907,30 @@ function WardrobeTracker() {
   // ── Auth ───────────────────────────────────────────────────────────────────
   const handleAuth = (user) => {
     setSession(user);
+    setShowSignUpSheet(false);
+    if (pendingSave) { setTimeout(() => { pendingSave(); setPendingSave(null); }, 400); }
+  };
+
+  const handleOnboardingComplete = (houseNames) => {
+    setShowOnboarding(false);
+    setHouses(houseNames);
+    localStorage.setItem('potli-onboarded', '1');
+    try { localStorage.setItem('potli-guest-houses', JSON.stringify(houseNames)); } catch(e) {}
+    const names  = ['White Kurta','Red Saree','Navy Blazer','Blue Jeans','Green Lehenga'];
+    const types  = ['Kurta','Saree','Blazer','Jeans','Lehenga'];
+    const cats   = ['Indian Wear','Indian Wear','Outerwear','Bottoms','Indian Wear'];
+    const colors = ['White','Red','Navy','Blue','Green'];
+    const items  = houseNames.map((_, i) => ({
+      id: `ob-${Date.now()}-${i}`,
+      name: names[i % names.length],
+      category: cats[i % cats.length],
+      subType: types[i % types.length],
+      color: colors[i % colors.length],
+      house: i,
+      photo: makeClothSvg(types[i % types.length], colors[i % colors.length]),
+      addedAt: new Date().toISOString(),
+    }));
+    setClothes(items);
   };
 
   const handleSignOut = async () => {
@@ -749,6 +939,8 @@ function WardrobeTracker() {
     setShowSettings(false);
     setClothes([]); setHouses(DEFAULT_HOUSES); setCategories(DEFAULT_CATEGORIES);
     setProfile({ name:'' }); setFavorites({});
+    localStorage.removeItem('potli-onboarded');
+    setShowOnboarding(true);
   };
 
   const seedData = () => {
@@ -822,17 +1014,26 @@ function WardrobeTracker() {
   };
 
   const handleSave = () => {
-    if (!form.name.trim()) return;
-    const photo = form.photo || (form.subType ? makeClothSvg(form.subType, form.color) : '');
-    if (editingItem) {
-      savePhoto(editingItem.id, photo); // persist photo locally
-      saveClothes(clothes.map(c => c.id === editingItem.id ? { ...c, ...form, photo } : c));
-    } else {
-      const id = Date.now().toString();
-      savePhoto(id, photo); // persist photo locally
-      saveClothes([...clothes, { id, ...form, photo, addedAt: new Date().toISOString() }]);
+    const autoName = form.name.trim() || form.subType || form.category || 'Item';
+    const resolvedForm = { ...form, name: autoName };
+    const photo = resolvedForm.photo || (resolvedForm.subType ? makeClothSvg(resolvedForm.subType, resolvedForm.color) : '');
+    const doSave = () => {
+      if (editingItem) {
+        savePhoto(editingItem.id, photo);
+        saveClothes(clothes.map(c => c.id === editingItem.id ? { ...c, ...resolvedForm, photo } : c));
+      } else {
+        const id = Date.now().toString();
+        savePhoto(id, photo);
+        saveClothes([...clothes, { id, ...resolvedForm, photo, addedAt: new Date().toISOString() }]);
+      }
+      setShowAddModal(false);
+    };
+    if (!session) {
+      setPendingSave(() => doSave);
+      setShowSignUpSheet(true);
+      return;
     }
-    setShowAddModal(false);
+    doSave();
   };
 
   const handleDelete  = (id) => saveClothes(clothes.filter(c => c.id !== id));
@@ -883,8 +1084,9 @@ function WardrobeTracker() {
     ? profile.name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2)
     : 'ME';
 
-  if (!sessionChecked) return null; // tiny flash before check completes
-  if (!session) return <AuthScreen onAuth={handleAuth} />;
+  if (!sessionChecked) return null;
+  if (showOnboarding) return <OnboardingFlow onComplete={handleOnboardingComplete} />;
+  if (!session && !showSignUpSheet && !loading) return <AuthScreen onAuth={handleAuth} />;
 
   if (loading) return (
     <div style={{ minHeight:'100vh', background:CREAM, display:'flex', alignItems:'center', justifyContent:'center' }}>
@@ -1117,6 +1319,27 @@ function WardrobeTracker() {
           )}
         </div>
 
+        {/* ── COACH MARK ── */}
+        {!coachDismissed && clothes.length > 0 && clothes.length <= 4 && !showAddModal && (
+          <div onClick={() => setCoachDismissed(true)} style={{ position:'fixed', inset:0, zIndex:29, display:'flex', alignItems:'flex-end', justifyContent:'flex-end', pointerEvents:'none', padding:'0 20px 88px' }}>
+            <div style={{ background:'#1a1816', color:'#f5f3ef', borderRadius:14, padding:'10px 16px', fontSize:13, fontWeight:500, maxWidth:200, boxShadow:'0 4px 16px rgba(26,24,22,0.22)', pointerEvents:'all', cursor:'pointer', position:'relative', textAlign:'center', lineHeight:1.5 }}>
+              ✨ Tap + to add your first item
+              <div style={{ position:'absolute', bottom:-8, right:26, width:0, height:0, borderLeft:'8px solid transparent', borderRight:'8px solid transparent', borderTop:'8px solid #1a1816' }}/>
+            </div>
+          </div>
+        )}
+
+        {/* ── DEFERRED SIGN-UP SHEET ── */}
+        {showSignUpSheet && (
+          <SignUpSheet
+            onAuth={handleAuth}
+            onSkip={() => {
+              setShowSignUpSheet(false);
+              if (pendingSave) { pendingSave(); setPendingSave(null); }
+            }}
+          />
+        )}
+
         {/* ── FAB ── */}
         <button onClick={openAdd} style={{ position:'fixed', bottom:24, right:24, width:50, height:50, borderRadius:'50%', background:'#1a1816', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 18px rgba(26,24,22,0.22)', zIndex:30, transition:'transform .15s' }}
           onMouseEnter={e => e.currentTarget.style.transform='scale(1.07)'}
@@ -1257,26 +1480,26 @@ function WardrobeTracker() {
               <div style={{ flex:1, padding:'8px 20px 32px', display:'flex', flexDirection:'column' }}>
                 <div style={{ marginBottom:24 }}>
                   {form.photo && <img src={form.photo} style={{ width:64, height:64, borderRadius:14, objectFit:'cover', marginBottom:16 }}/>}
-                  <h2 className="serif" style={{ fontSize:26, fontWeight:600, color:'#1a1816', margin:'0 0 4px', letterSpacing:'-0.3px' }}>Name it</h2>
-                  <p style={{ fontSize:13, color:'#a8a29e', margin:0 }}>What should we call this?</p>
+                  <h2 className="serif" style={{ fontSize:26, fontWeight:600, color:'#1a1816', margin:'0 0 4px', letterSpacing:'-0.3px' }}>Add details</h2>
+                  <p style={{ fontSize:13, color:'#a8a29e', margin:0 }}>Both optional — tap Skip to continue</p>
                 </div>
 
                 {/* Name */}
                 <div style={{ marginBottom:16 }}>
-                  <span style={{ fontSize:10, letterSpacing:'0.1em', fontWeight:600, textTransform:'uppercase', color:'#a8a29e', display:'block', marginBottom:8 }}>Name</span>
+                  <span style={{ fontSize:10, letterSpacing:'0.1em', fontWeight:600, textTransform:'uppercase', color:'#a8a29e', display:'block', marginBottom:8 }}>Custom name <span style={{ fontWeight:400, letterSpacing:0, textTransform:'none', color:'#c4b8a8' }}>— optional</span></span>
                   <input
                     autoFocus
                     value={form.name}
                     onChange={e => setForm(p => ({ ...p, name:e.target.value }))}
-                    placeholder={form.subType ? `e.g. My favourite ${form.subType}` : 'e.g. Blue cotton kurta'}
-                    onKeyDown={e => { if (e.key==='Enter' && form.name.trim()) setAddStep(2); }}
-                    style={{ width:'100%', padding:'14px 16px', background:CARD, border:'1.5px solid rgba(44,42,38,0.12)', borderRadius:14, fontSize:16, color:'#1a1816', outline:'none', boxSizing:'border-box' }}
+                    placeholder={`Will show as "${form.subType || form.category || 'item'}" if left blank`}
+                    onKeyDown={e => { if (e.key==='Enter') setAddStep(2); }}
+                    style={{ width:'100%', padding:'14px 16px', background:CARD, border:'1.5px solid rgba(44,42,38,0.12)', borderRadius:14, fontSize:15, color:'#1a1816', outline:'none', boxSizing:'border-box' }}
                   />
                 </div>
 
                 {/* Color swatches + text */}
                 <div>
-                  <span style={{ fontSize:10, letterSpacing:'0.1em', fontWeight:600, textTransform:'uppercase', color:'#a8a29e', display:'block', marginBottom:8 }}>Color</span>
+                  <span style={{ fontSize:10, letterSpacing:'0.1em', fontWeight:600, textTransform:'uppercase', color:'#a8a29e', display:'block', marginBottom:8 }}>Color <span style={{ fontWeight:400, letterSpacing:0, textTransform:'none', color:'#c4b8a8' }}>— optional</span></span>
                   <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:10 }}>
                     {['White','Black','Navy','Blue','Red','Pink','Green','Yellow','Grey','Brown','Beige','Maroon','Floral','Mixed'].map(col => {
                       const swatchColors = { White:'#f5f3ef',Black:'#1a1816',Navy:'#1e3a66',Blue:'#5b7ca3',Red:'#b85450',Pink:'#d89aab',Green:'#7a8b6f',Yellow:'#d4a85c',Grey:'#9c9a95',Brown:'#7a5c42',Beige:'#d4c5a0',Maroon:'#7a3838',Floral:'#e0a8b5',Mixed:'#b5a8c0' };
@@ -1298,12 +1521,12 @@ function WardrobeTracker() {
                 </div>
 
                 <div style={{ marginTop:'auto', paddingTop:24 }}>
-                  <button onClick={() => setAddStep(2)} disabled={!form.name.trim()}
-                    style={{ ...btnReset, width:'100%', padding:'15px', borderRadius:14, fontSize:14, fontWeight:600, cursor: form.name.trim()?'pointer':'not-allowed',
-                      background: form.name.trim() ? '#1a1816' : '#e0d8cf', color: form.name.trim() ? '#f5f3ef' : '#a8a29e',
+                  <button onClick={() => setAddStep(2)}
+                    style={{ ...btnReset, width:'100%', padding:'15px', borderRadius:14, fontSize:14, fontWeight:600, cursor:'pointer',
+                      background:'#1a1816', color:'#f5f3ef',
                       justifyContent:'center', transition:'all .15s',
                     }}>
-                    Continue →
+                    {form.name.trim() ? 'Continue →' : 'Skip →'}
                   </button>
                 </div>
               </div>
@@ -1366,7 +1589,7 @@ function WardrobeTracker() {
                     <img src={form.photo || makeClothSvg(form.subType, form.color)} style={{ width:72, height:72, borderRadius:12, objectFit:'cover', background:'#F5F3EF' }}/>
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:17, fontWeight:600, color:'#1a1816', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis' }}>{form.name || '—'}</div>
+                    <div style={{ fontSize:17, fontWeight:600, color:'#1a1816', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis' }}>{form.name.trim() || form.subType || form.category || '—'}</div>
                     <div style={{ fontSize:12, color:'#a8a29e', marginTop:3 }}>
                       {[form.category, form.subType, form.color].filter(Boolean).join(' · ')}
                     </div>
@@ -1379,8 +1602,8 @@ function WardrobeTracker() {
                 {/* Editable summary rows */}
                 {[
                   { label:'Type', value: [form.category, form.subType].filter(Boolean).join(' / ') || 'Not set', step:0 },
-                  { label:'Name', value: form.name || 'Not set', step:1 },
-                  { label:'Color', value: form.color || 'Not set', step:1 },
+                  { label:'Name', value: form.name.trim() || `${form.subType || form.category} (auto)`, step:1 },
+                  { label:'Color', value: form.color || '—', step:1 },
                   { label:'Home', value: houses[form.house], step:2 },
                 ].map(row => (
                   <button key={row.label} onClick={() => setAddStep(row.step)}
@@ -1392,11 +1615,11 @@ function WardrobeTracker() {
                 ))}
 
                 <div style={{ marginTop:'auto', paddingTop:28 }}>
-                  <button onClick={handleSave} disabled={!form.name.trim() || !form.category || analyzing}
+                  <button onClick={handleSave} disabled={!form.category || analyzing}
                     style={{ ...btnReset, width:'100%', padding:'16px', borderRadius:14, fontSize:14, fontWeight:600,
-                      cursor: form.name.trim() && form.category ? 'pointer' : 'not-allowed',
-                      background: form.name.trim() && form.category ? GOLD : '#e0d8cf',
-                      color: form.name.trim() && form.category ? '#fff' : '#a8a29e',
+                      cursor: form.category ? 'pointer' : 'not-allowed',
+                      background: form.category ? GOLD : '#e0d8cf',
+                      color: form.category ? '#fff' : '#a8a29e',
                       justifyContent:'center', letterSpacing:'0.02em', transition:'all .15s',
                     }}>
                     {editingItem ? 'Save Changes' : '+ Add to Wardrobe'}
