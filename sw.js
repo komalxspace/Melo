@@ -1,11 +1,13 @@
 // Melo service worker — basic offline caching
 // Bumps version on each deploy to force fresh cache
-const VERSION = 'melo-v1';
+const VERSION = 'melo-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon.svg'
+  './favicon.png',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 self.addEventListener('install', e => {
