@@ -677,8 +677,10 @@ body{background:var(--bg) !important}
 .shop-section-hdr{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);padding:14px 16px 8px;display:flex;align-items:center;gap:6px}
 .shop-section-hdr-stocked{margin-top:8px;border-top:1px dashed var(--border);padding-top:18px}
 .shop-section-count{font-size:11px;font-weight:600;color:var(--text3);background:var(--surface2);padding:2px 7px;border-radius:8px;letter-spacing:0}
-.shop-item-stocked{opacity:.66;cursor:pointer;transition:opacity .15s}
-.shop-item-stocked:active{opacity:.85}
+.shop-item-stocked .shop-check{cursor:pointer;transition:all .15s}
+.shop-item-stocked .shop-check:hover{transform:scale(1.1);box-shadow:0 0 0 3px rgba(220,38,38,.15)}
+.shop-item-stocked{opacity:.66;transition:opacity .15s}
+.shop-item-stocked:hover{opacity:.85}
 .shop-item-stocked .shop-item-name{color:var(--text2);text-decoration:line-through;text-decoration-color:var(--text3);text-decoration-thickness:1px}
 .shop-item-stocked .shop-item-dishes{color:var(--text3)}
 .shop-item{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:12px 14px;margin:0 16px 8px}
@@ -4585,8 +4587,8 @@ function renderShopping() {
   if (inStock.length > 0) {
     html += `<div class="shop-section-hdr shop-section-hdr-stocked">✓ Already in Pantry <span class="shop-section-count">${inStock.length}</span></div>`;
     inStock.forEach(({ing, dishes: dd}) => {
-      html += `<div class="shop-item shop-item-stocked" onclick="cycleStock('${ing.id}')">
-        <div class="shop-check checked" id="sc-${ing.id}"></div>
+      html += `<div class="shop-item shop-item-stocked">
+        <div class="shop-check checked" id="sc-${ing.id}" onclick="markIngOutOfStock('${ing.id}')" title="Tap to mark out of stock"></div>
         <div class="shop-item-info">
           <div class="shop-item-name">${ing.emoji} ${ing.name}</div>
           <div class="shop-item-dishes">${dd.join(', ')}</div>
@@ -4609,7 +4611,19 @@ function toggleShopCheck(ingId) {
   renderShopping();
   renderPantry();
   updateProfileStats();
-  toast(`${ing.name} marked In Stock`);
+  toast(`${ing.name} marked in stock`);
+}
+
+function markIngOutOfStock(ingId) {
+  const ing = ingredients.find(i => i.id === ingId);
+  if (!ing) return;
+  ing.status = 'out';
+  if (ing.stockStatus !== undefined) ing.stockStatus = 'out-of-stock';
+  saveStorage();
+  renderShopping();
+  renderPantry();
+  updateProfileStats();
+  toast(`${ing.name} moved to shopping list`);
 }
 
 // ═══════════════════════════════════════════════════════════════
