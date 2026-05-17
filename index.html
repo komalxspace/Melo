@@ -18,8 +18,8 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<!-- Supabase JS client -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- Supabase JS client (UMD build — exposes window.supabase) -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 :root {
   color-scheme: light;
@@ -834,11 +834,11 @@ body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:env(safe-ar
       <div class="login-sub" id="auth-sub">Sign in to sync your kitchen across devices</div>
       <div class="login-form-group">
         <label>Email</label>
-        <input id="login-email" type="email" placeholder="you@example.com" oninput="onAuthInput()" autocomplete="email">
+        <input id="login-email" type="email" placeholder="you@example.com" oninput="onAuthInput()" onkeyup="onAuthInput()" onchange="onAuthInput()" autocomplete="email">
       </div>
       <div class="login-form-group">
         <label>Password</label>
-        <input id="login-password" type="password" placeholder="At least 6 characters" oninput="onAuthInput()" minlength="6" autocomplete="current-password">
+        <input id="login-password" type="password" placeholder="At least 6 characters" oninput="onAuthInput()" onkeyup="onAuthInput()" onchange="onAuthInput()" onkeydown="if(event.key==='Enter')loginNext()" minlength="6" autocomplete="current-password">
       </div>
       <div class="login-error" id="login-error" style="display:none"></div>
       <div class="login-mode-toggle">
@@ -5921,15 +5921,22 @@ let cloudSyncPending = false;  // debounced-write flag
 let cloudSyncTimer = null;
 
 function _initSupabase() {
-  if (typeof window.supabase === 'undefined') {
-    console.error('Supabase JS not loaded');
+  // Different builds expose the namespace differently — check all variants
+  const lib = window.supabase || window.Supabase || null;
+  if (!lib || typeof lib.createClient !== 'function') {
+    console.error('Supabase JS library not loaded. window.supabase:', window.supabase);
     return false;
   }
-  // The library exposes the namespace as window.supabase; createClient is on it
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: { persistSession: true, autoRefreshToken: true, storage: localStorage }
-  });
-  return true;
+  try {
+    supabase = lib.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, storage: localStorage }
+    });
+    console.log('Supabase client initialised');
+    return true;
+  } catch (e) {
+    console.error('Supabase createClient failed:', e);
+    return false;
+  }
 }
 
 // Push current localStorage profile state to Supabase
@@ -6055,9 +6062,12 @@ function _updateLoginBtn() {
   if (loginStep === 'auth') {
     const validEmail = /\S+@\S+\.\S+/.test(loginState.email);
     const validPw = loginState.password.length >= 6;
-    btn.disabled = !(validEmail && validPw);
+    // Keep button enabled so users can tap and see what's wrong
+    btn.disabled = false;
+    btn.style.opacity = (validEmail && validPw) ? '1' : '.6';
   } else if (loginStep === 'profile') {
     btn.disabled = !loginState.name.trim();
+    btn.style.opacity = btn.disabled ? '.6' : '1';
   }
 }
 
@@ -6117,6 +6127,31 @@ function adjLoginFam(type, delta) {
 async function loginNext() {
   const btn = document.getElementById('login-next-btn');
   if (loginStep === 'auth') {
+    // Re-read values directly from inputs in case state is stale
+    loginState.email = document.getElementById('login-email').value.trim();
+    loginState.password = document.getElementById('login-password').value;
+
+    // Client-side validation with explicit messages
+    if (!loginState.email) {
+      _showLoginError('Please enter your email.');
+      document.getElementById('login-email').focus();
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(loginState.email)) {
+      _showLoginError('That email doesn\'t look right. Check the format (e.g. you@example.com).');
+      document.getElementById('login-email').focus();
+      return;
+    }
+    if (!loginState.password) {
+      _showLoginError('Please enter your password.');
+      document.getElementById('login-password').focus();
+      return;
+    }
+    if (loginState.password.length < 6) {
+      _showLoginError('Password must be at least 6 characters.');
+      document.getElementById('login-password').focus();
+      return;
+    }
     if (!supabase) {
       _showLoginError('Connection issue. Refresh the page and try again.');
       return;
@@ -6146,7 +6181,7 @@ async function loginNext() {
       }
       currentUser = authResult.data.user;
       if (!currentUser) {
-        _showLoginError('Authentication did not return a user. Check that email confirmation is OFF in Supabase.');
+        _showLoginError('Authentication did not return a user. In Supabase, make sure email confirmation is OFF.');
         btn.disabled = false;
         btn.textContent = authMode === 'signin' ? 'Sign In →' : 'Create Account →';
         return;
@@ -6154,7 +6189,6 @@ async function loginNext() {
       // Try pulling existing cloud state
       const hasCloudData = await _pullFromCloud();
       if (hasCloudData) {
-        // Existing user with data — skip profile step, go straight in
         const localUser = { email: currentUser.email, verified: true };
         try {
           const stored = localStorage.getItem(LOGIN_KEY);
@@ -6171,12 +6205,11 @@ async function loginNext() {
         init();
         toast('Welcome back! 👋');
       } else {
-        // New user — collect profile details
         _showLoginStep('profile');
       }
     } catch (e) {
-      console.error(e);
-      _showLoginError('Unexpected error. Please try again.');
+      console.error('Login error:', e);
+      _showLoginError('Unexpected error: ' + (e.message || 'Please try again.'));
       btn.disabled = false;
       btn.textContent = authMode === 'signin' ? 'Sign In →' : 'Create Account →';
     }
@@ -6184,6 +6217,10 @@ async function loginNext() {
   }
 
   if (loginStep === 'profile') {
+    if (!loginState.name.trim()) {
+      _showLoginError('Please enter your name.');
+      return;
+    }
     const user = {
       email: currentUser ? currentUser.email : loginState.email,
       name: loginState.name.trim(),
@@ -6199,37 +6236,34 @@ async function loginNext() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
     init();
-    // Push initial state to cloud after init seeds the profile
     setTimeout(() => scheduleCloudSync(), 1500);
     toast('Welcome, ' + user.name.split(' ')[0] + '! 🎉');
   }
 }
 
 async function bootApp() {
+  // Show the login screen immediately so users see something even if Supabase is slow
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  _showLoginStep('auth');
+
   if (!_initSupabase()) {
-    // Fallback: show login UI but Supabase calls will fail with a clear message
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
-    _showLoginStep('auth');
+    _showLoginError("Couldn't reach Supabase. Check your internet, then refresh.");
     return;
   }
-  // Check if we have an active Supabase session
+  // Check for active session
   try {
     const { data } = await supabase.auth.getSession();
     if (data && data.session && data.session.user) {
       currentUser = data.session.user;
-      // Pull cloud state to ensure freshest data
       await _pullFromCloud();
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('app').style.display = 'flex';
       init();
-      return;
     }
-  } catch(e) { console.warn('Session check failed:', e); }
-  // No session — show login
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-  _showLoginStep('auth');
+  } catch(e) {
+    console.warn('Session check failed:', e);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
