@@ -17,9 +17,6 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-<!-- Supabase JS client (UMD build — exposes window.supabase) -->
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 :root {
   color-scheme: light;
@@ -827,24 +824,20 @@ body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:env(safe-ar
       <div class="lg-tag">Your Indian kitchen planner</div>
     </div>
 
-    <!-- STEP 0: Email + Password -->
+    <!-- STEP 0: Email + Password (local-only, accepts anything) -->
     <div class="login-step active" id="login-step-auth">
       <div class="login-icon">👋</div>
-      <div class="login-title" id="auth-title">Welcome back</div>
-      <div class="login-sub" id="auth-sub">Sign in to sync your kitchen across devices</div>
+      <div class="login-title" id="auth-title">Welcome to Melo</div>
+      <div class="login-sub" id="auth-sub">Type anything to get started</div>
       <div class="login-form-group">
         <label>Email</label>
         <input id="login-email" type="email" placeholder="you@example.com" oninput="onAuthInput()" onkeyup="onAuthInput()" onchange="onAuthInput()" autocomplete="email">
       </div>
       <div class="login-form-group">
         <label>Password</label>
-        <input id="login-password" type="password" placeholder="At least 6 characters" oninput="onAuthInput()" onkeyup="onAuthInput()" onchange="onAuthInput()" onkeydown="if(event.key==='Enter')loginNext()" minlength="6" autocomplete="current-password">
+        <input id="login-password" type="password" placeholder="••••••" oninput="onAuthInput()" onkeyup="onAuthInput()" onchange="onAuthInput()" onkeydown="if(event.key==='Enter')loginNext()" autocomplete="current-password">
       </div>
       <div class="login-error" id="login-error" style="display:none"></div>
-      <div class="login-mode-toggle">
-        <span id="lm-prompt">New here?</span>
-        <button type="button" onclick="toggleAuthMode()" id="lm-btn">Create an account</button>
-      </div>
     </div>
 
     <!-- STEP 1: Profile Details (only shown on first signup) -->
@@ -879,7 +872,7 @@ body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:env(safe-ar
   </div>
 
   <div class="login-footer">
-    <button class="login-btn" id="login-next-btn" onclick="loginNext()" disabled>Sign In →</button>
+    <button class="login-btn" id="login-next-btn" onclick="loginNext()" disabled>Continue →</button>
     <div class="login-terms" id="login-terms">By continuing you agree to Melo's <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a></div>
   </div>
 </div>
@@ -5911,131 +5904,23 @@ function updateAccountCard() {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// SUPABASE CLIENT + CLOUD SYNC
-// ═══════════════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://hrytmgetshewznvghoua.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_6sRac6EuT01KXOFmgoL4jg_71oqD-um';
-let supabase = null;
-let currentUser = null;        // Supabase auth user object once signed in
-let cloudSyncPending = false;  // debounced-write flag
-let cloudSyncTimer = null;
-
-function _initSupabase() {
-  // Different builds expose the namespace differently — check all variants
-  const lib = window.supabase || window.Supabase || null;
-  if (!lib || typeof lib.createClient !== 'function') {
-    console.error('Supabase JS library not loaded. window.supabase:', window.supabase);
-    return false;
-  }
-  try {
-    supabase = lib.createClient(SUPABASE_URL, SUPABASE_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, storage: localStorage }
-    });
-    console.log('Supabase client initialised');
-    return true;
-  } catch (e) {
-    console.error('Supabase createClient failed:', e);
-    return false;
-  }
-}
-
-// Push current localStorage profile state to Supabase
-async function _pushToCloud() {
-  if (!supabase || !currentUser) return;
-  try {
-    // Bundle the entire melo_* localStorage namespace into one JSON blob
-    const blob = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && k.startsWith('melo_') && !k.startsWith('sb-')) {
-        blob[k] = localStorage.getItem(k);
-      }
-    }
-    const { error } = await supabase
-      .from('profiles')
-      .update({ data: blob })
-      .eq('user_id', currentUser.id);
-    if (error) console.warn('Cloud push failed:', error.message);
-  } catch (e) {
-    console.warn('Cloud push exception:', e);
-  }
-}
-
-// Debounced cloud sync — call after any local change
-function scheduleCloudSync() {
-  if (!supabase || !currentUser) return;
-  if (cloudSyncTimer) clearTimeout(cloudSyncTimer);
-  cloudSyncTimer = setTimeout(() => {
-    _pushToCloud();
-    cloudSyncTimer = null;
-  }, 1200);
-}
-
-// Pull profile state from Supabase and hydrate localStorage
-async function _pullFromCloud() {
-  if (!supabase || !currentUser) return false;
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('data')
-      .eq('user_id', currentUser.id)
-      .single();
-    if (error) {
-      console.warn('Cloud pull failed:', error.message);
-      return false;
-    }
-    if (data && data.data && typeof data.data === 'object' && Object.keys(data.data).length > 0) {
-      // Clear existing melo_* keys, then load from cloud
-      const toRemove = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && k.startsWith('melo_') && !k.startsWith('sb-')) toRemove.push(k);
-      }
-      toRemove.forEach(k => localStorage.removeItem(k));
-      Object.keys(data.data).forEach(k => {
-        localStorage.setItem(k, data.data[k]);
-      });
-      return true;
-    }
-    return false;
-  } catch (e) {
-    console.warn('Cloud pull exception:', e);
-    return false;
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// LOGOUT
-// ═══════════════════════════════════════════════════════════════
-function confirmLogout() {
-  openSheet('logout');
-}
-function cancelLogout() { closeSheet('logout'); }
-async function executeLogout() {
-  closeSheet('logout');
-  // Sign out of Supabase first
-  if (supabase) {
-    try { await supabase.auth.signOut(); } catch(e) { console.warn('Sign out error:', e); }
-  }
-  // Clear local cache
-  const keysToRemove = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k && (k === LOGIN_KEY || k.startsWith('melo_') || k.startsWith('sb-'))) keysToRemove.push(k);
-  }
-  keysToRemove.forEach(k => localStorage.removeItem(k));
-  currentUser = null;
-  toast('Logged out');
-  setTimeout(() => location.reload(), 400);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// LOGIN FLOW — Email + Password via Supabase Auth
+// LOGIN — local-only dummy auth (no backend)
+// Any non-empty email + password works. Persists in localStorage.
 // ═══════════════════════════════════════════════════════════════
 const LOGIN_KEY = 'melo_user';
-let loginStep = 'auth';    // 'auth' | 'profile'
-let authMode  = 'signin';  // 'signin' | 'signup'
+let loginStep = 'auth';   // 'auth' | 'profile'
 const loginState = {email: '', password: '', name: '', adults: 2, kids: 0};
+
+function isLoggedIn() {
+  try {
+    const raw = localStorage.getItem(LOGIN_KEY);
+    return raw && JSON.parse(raw).verified;
+  } catch(e) { return false; }
+}
+
+function getLoggedInUser() {
+  try { return JSON.parse(localStorage.getItem(LOGIN_KEY)); } catch(e) { return null; }
+}
 
 function _showLoginStep(step) {
   loginStep = step;
@@ -6044,7 +5929,7 @@ function _showLoginStep(step) {
   const btn  = document.getElementById('login-next-btn');
   const terms = document.getElementById('login-terms');
   if (step === 'auth') {
-    btn.textContent = authMode === 'signin' ? 'Sign In →' : 'Create Account →';
+    btn.textContent = 'Continue →';
     terms.style.display = 'block';
     _updateLoginBtn();
     setTimeout(() => document.getElementById('login-email').focus(), 100);
@@ -6060,11 +5945,8 @@ function _showLoginStep(step) {
 function _updateLoginBtn() {
   const btn = document.getElementById('login-next-btn');
   if (loginStep === 'auth') {
-    const validEmail = /\S+@\S+\.\S+/.test(loginState.email);
-    const validPw = loginState.password.length >= 6;
-    // Keep button enabled so users can tap and see what's wrong
     btn.disabled = false;
-    btn.style.opacity = (validEmail && validPw) ? '1' : '.6';
+    btn.style.opacity = '1';
   } else if (loginStep === 'profile') {
     btn.disabled = !loginState.name.trim();
     btn.style.opacity = btn.disabled ? '.6' : '1';
@@ -6073,12 +5955,9 @@ function _updateLoginBtn() {
 
 function _showLoginError(msg) {
   const el = document.getElementById('login-error');
-  if (msg) {
-    el.textContent = msg;
-    el.style.display = 'block';
-  } else {
-    el.style.display = 'none';
-  }
+  if (!el) return;
+  if (msg) { el.textContent = msg; el.style.display = 'block'; }
+  else     { el.style.display = 'none'; }
 }
 
 function onAuthInput() {
@@ -6088,31 +5967,8 @@ function onAuthInput() {
   _updateLoginBtn();
 }
 
-function toggleAuthMode() {
-  authMode = authMode === 'signin' ? 'signup' : 'signin';
-  const title = document.getElementById('auth-title');
-  const sub   = document.getElementById('auth-sub');
-  const btn   = document.getElementById('login-next-btn');
-  const prompt = document.getElementById('lm-prompt');
-  const lmBtn  = document.getElementById('lm-btn');
-  const pw     = document.getElementById('login-password');
-  if (authMode === 'signin') {
-    title.textContent = 'Welcome back';
-    sub.textContent = 'Sign in to sync your kitchen across devices';
-    btn.textContent = 'Sign In →';
-    prompt.textContent = 'New here?';
-    lmBtn.textContent = 'Create an account';
-    pw.setAttribute('autocomplete', 'current-password');
-  } else {
-    title.textContent = 'Create your account';
-    sub.textContent = 'Start syncing your kitchen across devices';
-    btn.textContent = 'Create Account →';
-    prompt.textContent = 'Already have an account?';
-    lmBtn.textContent = 'Sign in';
-    pw.setAttribute('autocomplete', 'new-password');
-  }
-  _showLoginError(null);
-}
+// Toggle is a no-op for dummy auth — keep the function so the button doesn't error
+function toggleAuthMode() { _showLoginError(null); }
 
 function onNameInput() {
   loginState.name = document.getElementById('login-name').value;
@@ -6124,94 +5980,27 @@ function adjLoginFam(type, delta) {
   document.getElementById('login-' + type).textContent = loginState[type];
 }
 
-async function loginNext() {
-  const btn = document.getElementById('login-next-btn');
+function loginNext() {
   if (loginStep === 'auth') {
-    // Re-read values directly from inputs in case state is stale
     loginState.email = document.getElementById('login-email').value.trim();
     loginState.password = document.getElementById('login-password').value;
-
-    // Client-side validation with explicit messages
-    if (!loginState.email) {
-      _showLoginError('Please enter your email.');
-      document.getElementById('login-email').focus();
+    if (!loginState.email && !loginState.password) {
+      _showLoginError('Type anything in both fields to continue.');
       return;
     }
-    if (!/\S+@\S+\.\S+/.test(loginState.email)) {
-      _showLoginError('That email doesn\'t look right. Check the format (e.g. you@example.com).');
-      document.getElementById('login-email').focus();
-      return;
-    }
-    if (!loginState.password) {
-      _showLoginError('Please enter your password.');
-      document.getElementById('login-password').focus();
-      return;
-    }
-    if (loginState.password.length < 6) {
-      _showLoginError('Password must be at least 6 characters.');
-      document.getElementById('login-password').focus();
-      return;
-    }
-    if (!supabase) {
-      _showLoginError('Connection issue. Refresh the page and try again.');
-      return;
-    }
-    btn.disabled = true;
-    btn.textContent = authMode === 'signin' ? 'Signing in…' : 'Creating account…';
-    _showLoginError(null);
-
-    try {
-      let authResult;
-      if (authMode === 'signin') {
-        authResult = await supabase.auth.signInWithPassword({
-          email: loginState.email,
-          password: loginState.password,
-        });
-      } else {
-        authResult = await supabase.auth.signUp({
-          email: loginState.email,
-          password: loginState.password,
-        });
-      }
-      if (authResult.error) {
-        _showLoginError(authResult.error.message);
-        btn.disabled = false;
-        btn.textContent = authMode === 'signin' ? 'Sign In →' : 'Create Account →';
-        return;
-      }
-      currentUser = authResult.data.user;
-      if (!currentUser) {
-        _showLoginError('Authentication did not return a user. In Supabase, make sure email confirmation is OFF.');
-        btn.disabled = false;
-        btn.textContent = authMode === 'signin' ? 'Sign In →' : 'Create Account →';
-        return;
-      }
-      // Try pulling existing cloud state
-      const hasCloudData = await _pullFromCloud();
-      if (hasCloudData) {
-        const localUser = { email: currentUser.email, verified: true };
-        try {
-          const stored = localStorage.getItem(LOGIN_KEY);
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            localUser.name = parsed.name;
-            localUser.adults = parsed.adults;
-            localUser.kids = parsed.kids;
-          }
-        } catch(e) {}
-        localStorage.setItem(LOGIN_KEY, JSON.stringify(localUser));
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        init();
-        toast('Welcome back! 👋');
-      } else {
-        _showLoginStep('profile');
-      }
-    } catch (e) {
-      console.error('Login error:', e);
-      _showLoginError('Unexpected error: ' + (e.message || 'Please try again.'));
-      btn.disabled = false;
-      btn.textContent = authMode === 'signin' ? 'Sign In →' : 'Create Account →';
+    // Check if we already have an account on this device — if so, skip the profile step
+    const existing = getLoggedInUser();
+    if (existing && existing.name) {
+      // Same person returning on same device — keep their data, just refresh login
+      existing.email = loginState.email || existing.email;
+      existing.verified = true;
+      localStorage.setItem(LOGIN_KEY, JSON.stringify(existing));
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      init();
+      toast('Welcome back, ' + (existing.name.split(' ')[0]) + '! 👋');
+    } else {
+      _showLoginStep('profile');
     }
     return;
   }
@@ -6222,7 +6011,7 @@ async function loginNext() {
       return;
     }
     const user = {
-      email: currentUser ? currentUser.email : loginState.email,
+      email: loginState.email || 'guest@local',
       name: loginState.name.trim(),
       adults: loginState.adults,
       kids: loginState.kids,
@@ -6236,33 +6025,39 @@ async function loginNext() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
     init();
-    setTimeout(() => scheduleCloudSync(), 1500);
     toast('Welcome, ' + user.name.split(' ')[0] + '! 🎉');
   }
 }
 
-async function bootApp() {
-  // Show the login screen immediately so users see something even if Supabase is slow
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-  _showLoginStep('auth');
-
-  if (!_initSupabase()) {
-    _showLoginError("Couldn't reach Supabase. Check your internet, then refresh.");
-    return;
+// ═══════════════════════════════════════════════════════════════
+// LOGOUT
+// ═══════════════════════════════════════════════════════════════
+function confirmLogout() { openSheet('logout'); }
+function cancelLogout() { closeSheet('logout'); }
+function executeLogout() {
+  closeSheet('logout');
+  const keysToRemove = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && (k === LOGIN_KEY || k.startsWith('melo_'))) keysToRemove.push(k);
   }
-  // Check for active session
-  try {
-    const { data } = await supabase.auth.getSession();
-    if (data && data.session && data.session.user) {
-      currentUser = data.session.user;
-      await _pullFromCloud();
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'flex';
-      init();
-    }
-  } catch(e) {
-    console.warn('Session check failed:', e);
+  keysToRemove.forEach(k => localStorage.removeItem(k));
+  toast('Logged out');
+  setTimeout(() => location.reload(), 400);
+}
+
+// Stub for cloud sync so existing call sites don't error
+function scheduleCloudSync() { /* no-op in dummy-auth mode */ }
+
+function bootApp() {
+  if (isLoggedIn()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    init();
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    _showLoginStep('auth');
   }
 }
 
